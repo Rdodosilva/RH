@@ -1,0 +1,14 @@
+[theme]
+primaryColor="#00FFFF" # Ciano vibrante para elementos interativos
+backgroundColor="#0A0A0A" # Fundo bem escuro, quase preto
+secondaryBackgroundColor="#1E1E1E" # Um cinza escuro para caixas e elementos secundários
+textColor="#E0FFFF" # Ciano claro para texto principal, dando um brilho
+font="sans serif"
+
+[global]
+allow_output_mutation = true
+
+[server]
+headless = true
+
+
