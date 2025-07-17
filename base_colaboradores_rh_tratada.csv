@@ -1,0 +1,201 @@
+Nome,Cargo,Departamento,Estado,Data da Falta,Motivo,Justificada,Gênero,Data de Admissão
+Yuri Rodrigues,Assistente Comercial,RH,PE,2025-05-09,Família,Não,M,2018-03-21
+Sr. Breno Almeida,Assistente Comercial,Operações,PE,2025-06-30,Família,Não,M,2023-07-16
+Dr. Benício Caldeira,Motorista,TI,SP,2025-05-28,Sem justificativa,Sim,F,2020-06-11
+Augusto Nunes,Gerente de Projetos,TI,CE,2025-06-21,Falta de transporte,Sim,F,2021-09-20
+Isabelly Mendes,Gerente de Projetos,Operações,PR,2025-06-27,Pessoal,Não,M,2021-03-08
+Juliana Pereira,Técnico de TI,Operações,PR,2025-07-03,Família,Não,M,2021-09-04
+João Lucas Mendes,Analista Financeiro,TI,CE,2025-05-19,Sem justificativa,Sim,M,2024-12-04
+Cauã Ferreira,Técnico de TI,RH,MG,2025-06-23,Doença,Sim,M,2022-10-16
+Srta. Ana Vitória Moraes,Analista Financeiro,RH,SP,2025-05-14,Sem justificativa,Não,M,2018-09-23
+Laís Aragão,Assistente Comercial,Financeiro,BA,2025-05-10,Sem justificativa,Sim,M,2015-10-02
+Enzo Rezende,Motorista,RH,BA,2025-06-16,Família,Sim,M,2016-04-20
+Valentina Correia,Analista de RH,Marketing,PR,2025-06-20,Médico,Não,F,2018-11-30
+Catarina Aragão,Motorista,RH,PE,2025-05-09,Falta de transporte,Não,F,2021-09-12
+Joana Cardoso,Gerente de Projetos,RH,PR,2025-06-05,Pessoal,Sim,M,2021-01-11
+Leandro da Conceição,Auxiliar Administrativo,Marketing,RS,2025-06-15,Falta de transporte,Não,M,2018-04-28
+Beatriz Duarte,Motorista,Comercial,RS,2025-05-21,Família,Sim,M,2020-02-23
+Vitor Barros,Analista Financeiro,Logística,PR,2025-06-12,Família,Não,M,2023-09-05
+Henrique Pinto,Analista de RH,Comercial,PR,2025-06-17,Doença,Não,F,2017-03-04
+Luiz Fernando Azevedo,Técnico de TI,Logística,SP,2025-06-28,Pessoal,Não,M,2024-01-22
+Breno Freitas,Analista de RH,Marketing,BA,2025-06-15,Pessoal,Sim,M,2019-10-26
+Diego Vieira,Gerente de Projetos,RH,PE,2025-06-13,Falta de transporte,Sim,M,2018-02-08
+Srta. Ana Lívia Melo,Analista Financeiro,TI,SP,2025-05-19,Doença,Sim,F,2018-03-17
+Rafaela Duarte,Gerente de Projetos,Financeiro,BA,2025-06-15,Falta de transporte,Sim,M,2023-04-01
+Davi Lucas Ribeiro,Assistente Comercial,RH,RS,2025-05-30,Pessoal,Sim,M,2021-10-21
+Dr. João Dias,Assistente Comercial,RH,PE,2025-05-26,Falta de transporte,Sim,M,2023-04-08
+Isis Moreira,Gerente de Projetos,RH,RJ,2025-05-08,Sem justificativa,Sim,M,2021-01-20
+Sra. Catarina Ferreira,Gerente de Projetos,Marketing,BA,2025-05-13,Médico,Não,F,2017-11-25
+Marcelo Moraes,Motorista,Marketing,RS,2025-06-18,Doença,Não,M,2020-11-23
+Breno Azevedo,Assistente Comercial,RH,CE,2025-05-11,Médico,Sim,M,2022-10-15
+Stella Farias,Gerente de Projetos,RH,RS,2025-06-08,Família,Sim,F,2017-01-08
+Joana Viana,Analista de RH,RH,MG,2025-05-09,Família,Sim,F,2020-07-26
+Sophie Cunha,Assistente Comercial,Comercial,CE,2025-07-03,Pessoal,Não,F,2024-11-01
+Ana Vitória Araújo,Auxiliar Administrativo,Financeiro,MG,2025-06-14,Família,Sim,M,2023-07-22
+Ana Júlia Cunha,Analista Financeiro,TI,SP,2025-05-09,Médico,Sim,M,2022-01-21
+Sr. Caio Fogaça,Técnico de TI,Comercial,PE,2025-06-14,Sem justificativa,Sim,M,2021-04-14
+Srta. Mirella da Costa,Auxiliar Administrativo,Logística,BA,2025-06-20,Falta de transporte,Não,F,2015-12-12
+João Miguel Gomes,Analista Financeiro,Marketing,SP,2025-05-30,Falta de transporte,Sim,M,2024-07-18
+Ana Vitória Araújo,Gerente de Projetos,TI,RJ,2025-06-18,Sem justificativa,Não,F,2025-02-20
+Melissa Cavalcanti,Assistente Comercial,Financeiro,CE,2025-07-01,Médico,Não,F,2019-11-11
+Cauã da Cruz,Assistente Comercial,Operações,SP,2025-05-23,Pessoal,Não,M,2022-06-24
+Laís Alves,Assistente Comercial,TI,PE,2025-05-16,Doença,Sim,F,2015-10-30
+Emanuelly Oliveira,Motorista,RH,RS,2025-06-11,Falta de transporte,Sim,F,2022-06-09
+Giovanna Peixoto,Gerente de Projetos,TI,CE,2025-06-27,Doença,Sim,M,2024-09-17
+Matheus Gonçalves,Analista de RH,TI,SP,2025-06-06,Família,Sim,F,2022-02-14
+Dra. Joana Aragão,Analista de RH,RH,RS,2025-06-07,Falta de transporte,Não,F,2017-04-05
+Srta. Sarah Ferreira,Gerente de Projetos,TI,BA,2025-05-28,Pessoal,Sim,M,2019-04-26
+Ana Lívia Freitas,Assistente Comercial,Comercial,MG,2025-05-22,Falta de transporte,Não,M,2017-05-12
+Carlos Eduardo Duarte,Assistente Comercial,TI,BA,2025-05-23,Falta de transporte,Não,M,2021-08-29
+Gabrielly Peixoto,Técnico de TI,Comercial,CE,2025-06-17,Doença,Não,M,2017-12-31
+Dr. Yuri Pereira,Gerente de Projetos,Comercial,BA,2025-05-06,Família,Sim,M,2018-12-25
+Joana da Cruz,Analista de RH,RH,RS,2025-05-07,Sem justificativa,Sim,F,2019-09-30
+Miguel Nascimento,Analista de RH,TI,PE,2025-05-10,Médico,Sim,F,2019-11-25
+Maria Luiza Rezende,Motorista,Comercial,PR,2025-06-21,Sem justificativa,Não,M,2022-09-08
+Renan Duarte,Auxiliar Administrativo,Financeiro,BA,2025-05-23,Doença,Não,M,2018-03-17
+Camila Cunha,Técnico de TI,RH,RS,2025-05-05,Sem justificativa,Sim,M,2023-02-02
+Heloísa Lopes,Analista Financeiro,Comercial,PE,2025-06-30,Família,Não,M,2023-10-01
+Sr. Breno Santos,Assistente Comercial,Marketing,MG,2025-05-09,Doença,Não,M,2023-05-05
+Luiz Otávio Duarte,Auxiliar Administrativo,RH,RJ,2025-07-01,Sem justificativa,Não,F,2023-12-23
+Helena Azevedo,Gerente de Projetos,Logística,MG,2025-05-07,Sem justificativa,Não,M,2016-08-19
+Maria Luiza Almeida,Analista Financeiro,Marketing,MG,2025-06-05,Falta de transporte,Sim,F,2022-07-27
+Sr. João Vitor da Luz,Analista Financeiro,Financeiro,CE,2025-06-09,Pessoal,Não,M,2024-08-04
+Joaquim Martins,Motorista,TI,SP,2025-05-05,Sem justificativa,Sim,M,2015-10-17
+Juan Pereira,Auxiliar Administrativo,Operações,BA,2025-06-01,Doença,Sim,M,2019-08-18
+Carlos Eduardo Gomes,Motorista,Comercial,RS,2025-06-08,Falta de transporte,Não,F,2024-04-12
+Yasmin Cunha,Analista Financeiro,RH,PR,2025-05-10,Doença,Sim,M,2016-03-18
+João Felipe Moraes,Analista de RH,Comercial,PR,2025-05-29,Sem justificativa,Sim,M,2019-07-03
+Gabrielly Fogaça,Auxiliar Administrativo,Operações,RS,2025-06-21,Pessoal,Sim,M,2017-11-24
+Luana Jesus,Motorista,Marketing,BA,2025-06-06,Pessoal,Sim,F,2019-05-25
+Maria Clara Novaes,Auxiliar Administrativo,Logística,RS,2025-06-20,Doença,Sim,M,2018-04-20
+Sr. Miguel Aragão,Motorista,Financeiro,MG,2025-06-09,Pessoal,Sim,M,2017-04-10
+Luiz Henrique da Conceição,Gerente de Projetos,Financeiro,CE,2025-05-20,Médico,Sim,F,2017-10-06
+Sra. Ana Sophia Lima,Motorista,Logística,PE,2025-05-29,Família,Sim,M,2024-08-31
+Laís Rocha,Analista Financeiro,Comercial,BA,2025-05-30,Médico,Sim,F,2017-03-28
+Vitória Lima,Analista de RH,Logística,PE,2025-05-27,Médico,Não,F,2016-12-28
+Breno Fernandes,Técnico de TI,Comercial,MG,2025-05-09,Falta de transporte,Sim,M,2024-09-08
+Isabella Aragão,Motorista,Logística,PR,2025-05-19,Pessoal,Sim,M,2020-11-01
+Ana Júlia Lopes,Analista Financeiro,Financeiro,SP,2025-06-17,Falta de transporte,Não,M,2018-12-12
+Sofia das Neves,Analista de RH,Operações,RJ,2025-06-18,Médico,Não,M,2024-08-16
+Miguel Duarte,Analista de RH,Marketing,RS,2025-06-26,Doença,Não,M,2017-01-09
+Dra. Stella Cardoso,Motorista,Financeiro,CE,2025-06-19,Doença,Sim,M,2019-03-17
+Fernando Ferreira,Motorista,Financeiro,PR,2025-05-29,Doença,Sim,M,2016-09-07
+Heloísa Martins,Motorista,Financeiro,PE,2025-05-11,Falta de transporte,Não,M,2018-12-29
+Juliana da Costa,Analista de RH,Operações,MG,2025-05-14,Família,Não,M,2025-04-13
+Murilo Costela,Técnico de TI,Logística,MG,2025-06-26,Doença,Não,F,2018-06-19
+Ryan Gomes,Técnico de TI,TI,SP,2025-06-06,Médico,Sim,F,2023-08-04
+João Miguel Ferreira,Analista Financeiro,Comercial,RJ,2025-06-17,Falta de transporte,Sim,F,2025-05-02
+Dr. Caio Lima,Analista de RH,TI,BA,2025-05-16,Pessoal,Não,F,2021-11-01
+Ana Lívia Cunha,Analista Financeiro,TI,BA,2025-05-07,Sem justificativa,Sim,M,2016-07-21
+Ana Pinto,Auxiliar Administrativo,Comercial,PR,2025-06-13,Família,Sim,M,2017-11-08
+Luiz Miguel Teixeira,Motorista,Financeiro,BA,2025-06-12,Pessoal,Sim,F,2016-08-14
+Ana Lívia Cunha,Auxiliar Administrativo,Logística,BA,2025-06-29,Sem justificativa,Sim,M,2017-02-22
+Luiz Felipe Carvalho,Auxiliar Administrativo,TI,MG,2025-06-06,Pessoal,Sim,F,2018-11-28
+Cecília Melo,Auxiliar Administrativo,RH,BA,2025-05-28,Família,Sim,M,2024-03-21
+Srta. Luna das Neves,Motorista,Financeiro,PE,2025-06-11,Doença,Sim,M,2017-06-23
+Marcelo Cunha,Motorista,Marketing,BA,2025-05-15,Médico,Sim,F,2024-10-11
+Dra. Sophia Rodrigues,Auxiliar Administrativo,Comercial,MG,2025-05-27,Médico,Não,M,2019-01-08
+Joaquim Moura,Analista Financeiro,Marketing,PE,2025-05-12,Médico,Não,M,2018-04-27
+Calebe Fogaça,Auxiliar Administrativo,Comercial,CE,2025-06-25,Família,Sim,F,2020-05-31
+Enzo Gabriel Cardoso,Motorista,Logística,RJ,2025-06-11,Sem justificativa,Não,F,2021-08-14
+Ana Vitória Rezende,Motorista,Comercial,CE,2025-05-10,Pessoal,Não,M,2018-04-17
+Carlos Eduardo Vieira,Analista Financeiro,TI,PR,2025-06-13,Falta de transporte,Sim,M,2024-10-05
+Nicolas Pereira,Motorista,TI,SP,2025-05-13,Médico,Não,M,2017-08-15
+Gabriela Duarte,Analista de RH,Financeiro,PR,2025-05-05,Pessoal,Sim,M,2019-09-08
+Srta. Sofia Cardoso,Gerente de Projetos,Comercial,PR,2025-05-09,Doença,Não,M,2023-12-12
+Maria Porto,Analista Financeiro,TI,RJ,2025-05-31,Falta de transporte,Sim,F,2025-05-24
+Helena Moreira,Assistente Comercial,Operações,SP,2025-06-01,Doença,Sim,F,2018-06-30
+Levi Porto,Gerente de Projetos,Logística,MG,2025-07-03,Falta de transporte,Sim,M,2017-01-02
+Sra. Maria Alice Costa,Analista de RH,Comercial,SP,2025-06-25,Sem justificativa,Não,M,2023-01-29
+Carolina Almeida,Analista de RH,RH,SP,2025-05-15,Família,Sim,F,2018-03-28
+Dra. Kamilly Carvalho,Técnico de TI,Financeiro,BA,2025-05-05,Pessoal,Não,M,2017-09-07
+Lívia Campos,Auxiliar Administrativo,Operações,PE,2025-05-26,Pessoal,Não,M,2019-12-31
+Emilly da Rocha,Assistente Comercial,Financeiro,RJ,2025-05-28,Sem justificativa,Sim,F,2017-10-01
+Thiago Freitas,Gerente de Projetos,Marketing,RJ,2025-06-17,Família,Sim,F,2021-02-03
+Maria Alice Cunha,Gerente de Projetos,Financeiro,PR,2025-06-22,Falta de transporte,Sim,F,2017-07-10
+Bernardo Campos,Analista de RH,Operações,RJ,2025-05-14,Família,Sim,F,2020-05-22
+Gabriel Cardoso,Analista Financeiro,TI,BA,2025-06-20,Médico,Não,F,2015-12-30
+Elisa Fernandes,Técnico de TI,Logística,RJ,2025-05-21,Falta de transporte,Não,M,2020-05-05
+Ana Clara Pires,Assistente Comercial,RH,SP,2025-06-12,Falta de transporte,Sim,F,2023-01-10
+Raquel Correia,Gerente de Projetos,Marketing,PE,2025-06-21,Médico,Sim,M,2019-05-03
+Alexandre Cardoso,Analista Financeiro,Logística,BA,2025-05-05,Médico,Sim,M,2016-12-16
+Dr. Arthur Cardoso,Analista de RH,RH,BA,2025-06-10,Sem justificativa,Não,M,2025-05-26
+Sr. Thiago Barbosa,Assistente Comercial,Comercial,PR,2025-06-16,Pessoal,Sim,M,2019-11-28
+João Miguel da Costa,Técnico de TI,Financeiro,CE,2025-06-02,Falta de transporte,Sim,M,2017-08-27
+Theo da Mota,Analista de RH,RH,PE,2025-05-23,Falta de transporte,Não,F,2017-04-28
+Elisa Dias,Motorista,Comercial,RS,2025-06-04,Família,Sim,F,2023-02-19
+Eloah Lima,Auxiliar Administrativo,Financeiro,SP,2025-05-20,Sem justificativa,Sim,M,2019-05-06
+Leonardo Almeida,Técnico de TI,Logística,PR,2025-06-18,Família,Não,M,2020-11-23
+Raul Aragão,Assistente Comercial,Comercial,SP,2025-05-05,Pessoal,Sim,F,2024-06-20
+Antônio Castro,Assistente Comercial,RH,BA,2025-06-25,Falta de transporte,Sim,M,2019-01-31
+Ana Julia Gomes,Analista de RH,Marketing,PE,2025-06-08,Doença,Não,F,2016-09-17
+Ana Sophia da Cruz,Técnico de TI,RH,RS,2025-07-01,Falta de transporte,Sim,F,2021-10-15
+Marcelo Costa,Analista Financeiro,Logística,PR,2025-05-16,Família,Sim,M,2017-11-23
+Luiz Otávio da Cunha,Assistente Comercial,Operações,BA,2025-05-17,Pessoal,Sim,F,2021-07-19
+Maria Clara Moura,Assistente Comercial,Logística,RS,2025-06-16,Médico,Sim,F,2023-06-23
+Emanuel Pires,Auxiliar Administrativo,Operações,MG,2025-07-01,Doença,Sim,M,2024-03-23
+Heloísa Aragão,Analista Financeiro,Logística,RJ,2025-06-11,Família,Sim,M,2023-05-21
+Natália Campos,Assistente Comercial,Financeiro,PR,2025-06-11,Família,Não,F,2019-07-29
+Milena Novaes,Gerente de Projetos,Comercial,PR,2025-06-26,Doença,Sim,M,2020-06-11
+Isis da Cunha,Analista Financeiro,Operações,CE,2025-05-09,Sem justificativa,Sim,F,2018-06-05
+Joaquim Moraes,Motorista,Logística,BA,2025-06-30,Falta de transporte,Não,F,2022-08-02
+Davi Luiz Lima,Assistente Comercial,Comercial,MG,2025-06-17,Doença,Não,F,2017-09-12
+Anthony Teixeira,Técnico de TI,RH,CE,2025-05-23,Pessoal,Sim,F,2025-02-04
+Dra. Clarice Monteiro,Assistente Comercial,Operações,BA,2025-05-07,Médico,Sim,M,2018-10-26
+Dr. Bernardo Alves,Analista Financeiro,Logística,PE,2025-05-21,Doença,Sim,M,2022-07-21
+Srta. Mariane Gomes,Motorista,Financeiro,CE,2025-06-23,Médico,Não,M,2016-05-17
+Laís Moraes,Motorista,Comercial,BA,2025-05-13,Sem justificativa,Sim,F,2017-07-02
+Levi Oliveira,Auxiliar Administrativo,Financeiro,RJ,2025-05-15,Sem justificativa,Sim,M,2019-09-10
+Srta. Camila Dias,Auxiliar Administrativo,Comercial,BA,2025-05-23,Médico,Sim,M,2022-04-17
+Bryan Rezende,Analista de RH,TI,RS,2025-05-21,Falta de transporte,Sim,M,2018-11-09
+Yuri Teixeira,Gerente de Projetos,Comercial,BA,2025-06-24,Médico,Sim,F,2021-03-04
+Vitor Gabriel da Cruz,Técnico de TI,RH,SP,2025-06-01,Doença,Sim,M,2020-04-07
+Letícia Lopes,Técnico de TI,Marketing,RS,2025-06-15,Falta de transporte,Sim,F,2019-04-27
+Ana Lívia Costa,Técnico de TI,Operações,BA,2025-06-17,Pessoal,Sim,M,2022-01-17
+Dr. Pedro Barros,Analista de RH,Marketing,SP,2025-07-01,Família,Sim,M,2021-10-18
+Lavínia Melo,Assistente Comercial,Operações,PR,2025-05-11,Doença,Sim,F,2019-04-05
+Leonardo Monteiro,Analista Financeiro,Financeiro,PE,2025-06-23,Pessoal,Não,F,2018-03-06
+João Guilherme da Luz,Motorista,Marketing,RJ,2025-05-11,Pessoal,Não,M,2024-02-19
+Vicente da Cunha,Analista Financeiro,Operações,CE,2025-06-06,Sem justificativa,Sim,M,2021-01-23
+Luna Fogaça,Técnico de TI,TI,CE,2025-06-10,Sem justificativa,Não,M,2020-03-09
+Sra. Lavínia Campos,Motorista,Operações,BA,2025-05-08,Médico,Não,M,2016-03-07
+Juan Lima,Técnico de TI,TI,MG,2025-05-15,Família,Não,M,2016-05-06
+João Vitor Costela,Assistente Comercial,Comercial,RS,2025-06-07,Médico,Não,M,2024-01-15
+Alexandre Moraes,Técnico de TI,Logística,PE,2025-06-25,Família,Sim,M,2019-03-29
+Stephany Costa,Motorista,Marketing,CE,2025-06-18,Médico,Não,F,2022-09-06
+Maria da Costa,Gerente de Projetos,Comercial,SP,2025-05-06,Médico,Sim,F,2016-11-09
+Rodrigo Costa,Gerente de Projetos,Comercial,BA,2025-07-02,Pessoal,Sim,M,2019-09-03
+Augusto Pinto,Motorista,Marketing,PE,2025-05-09,Médico,Não,F,2015-10-03
+Dra. Gabrielly Moraes,Analista de RH,Financeiro,RJ,2025-07-01,Família,Sim,F,2023-09-11
+Dr. João Lucas Caldeira,Motorista,Logística,BA,2025-06-18,Família,Não,M,2024-01-28
+Bárbara da Conceição,Motorista,Marketing,RS,2025-06-14,Doença,Sim,M,2018-09-09
+Sr. Luiz Gustavo Almeida,Assistente Comercial,Comercial,MG,2025-05-09,Médico,Não,F,2016-08-18
+Davi Lucca Oliveira,Analista Financeiro,Logística,RJ,2025-05-21,Sem justificativa,Não,F,2018-01-30
+Maria Vitória Porto,Motorista,Comercial,BA,2025-06-07,Falta de transporte,Não,F,2020-06-07
+Clara Silva,Gerente de Projetos,TI,MG,2025-06-14,Médico,Não,F,2020-05-30
+Dr. Paulo Lopes,Técnico de TI,Operações,BA,2025-05-12,Família,Sim,M,2023-01-02
+Sra. Isadora Correia,Analista Financeiro,Financeiro,SP,2025-06-13,Falta de transporte,Sim,M,2025-03-23
+Benjamin da Rosa,Assistente Comercial,Logística,SP,2025-06-14,Doença,Não,M,2020-04-10
+Samuel Almeida,Gerente de Projetos,TI,CE,2025-06-17,Doença,Sim,F,2023-06-30
+Isabelly da Cruz,Analista de RH,Financeiro,CE,2025-06-07,Médico,Sim,F,2022-03-25
+Sr. Lorenzo Ferreira,Assistente Comercial,TI,PR,2025-06-05,Doença,Não,F,2023-06-13
+Laura Duarte,Auxiliar Administrativo,TI,RS,2025-05-11,Médico,Não,M,2024-01-26
+Emilly Freitas,Auxiliar Administrativo,Logística,PR,2025-06-20,Falta de transporte,Não,M,2017-04-05
+João Gabriel Costela,Gerente de Projetos,Logística,CE,2025-06-22,Sem justificativa,Sim,F,2017-12-01
+Yuri Freitas,Gerente de Projetos,Financeiro,PR,2025-06-29,Doença,Não,M,2021-11-09
+Marina Farias,Técnico de TI,Marketing,PR,2025-05-30,Doença,Sim,F,2023-05-20
+Sarah Cardoso,Analista Financeiro,Operações,RS,2025-05-17,Falta de transporte,Sim,M,2016-09-04
+Luiza Lopes,Motorista,Financeiro,SP,2025-06-28,Falta de transporte,Não,F,2019-07-26
+Lucca Sales,Técnico de TI,Logística,RJ,2025-06-05,Família,Sim,F,2021-10-20
+André Dias,Analista de RH,RH,RS,2025-05-13,Médico,Sim,F,2019-11-29
+Dr. Arthur Dias,Técnico de TI,Marketing,RS,2025-05-15,Pessoal,Não,M,2024-09-14
+Valentina Monteiro,Gerente de Projetos,TI,RJ,2025-05-25,Família,Sim,M,2016-10-14
+Augusto Gonçalves,Auxiliar Administrativo,Logística,MG,2025-05-19,Doença,Sim,F,2022-07-18
+Helena Aragão,Analista de RH,Logística,BA,2025-06-27,Falta de transporte,Não,F,2019-07-29
+Pedro Miguel Aragão,Técnico de TI,TI,SP,2025-06-04,Médico,Não,M,2018-12-23
+Ana da Cruz,Motorista,RH,MG,2025-06-22,Falta de transporte,Não,F,2024-12-20
+Pedro Lucas Nunes,Analista de RH,TI,PR,2025-06-14,Sem justificativa,Sim,M,2024-01-31
+Larissa Lima,Gerente de Projetos,Logística,RS,2025-06-07,Família,Não,F,2016-12-23
+Ryan Porto,Gerente de Projetos,Logística,MG,2025-06-07,Médico,Sim,M,2024-07-30
+Julia Cardoso,Técnico de TI,TI,RS,2025-06-26,Médico,Sim,M,2020-06-19
+Stella Teixeira,Analista de RH,Comercial,RS,2025-06-12,Médico,Não,M,2021-11-03
