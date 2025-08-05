@@ -1,61 +1,268 @@
-motivos_selecionados = st.multiselect(
-            "📝 **Motivos das Faltas**",
-            options=sorted(df['Motivo'].unique()),
-            default=sorted(df['Motivo'].unique()),
-            help="Filtre por motivos específicos de absenteísmo"
-        )
-        
-        justificacao_filtro = st.selectbox(
-            "✅ **Status de Justificação**",
-            options=['Todas', 'Sim', 'Não'],
-            help="Analisar faltas justificadas vs não justificadas"
-        )
-        
-        genero_filtro = st.selectbox(
-            "👥 **Análise por Gênero**",
-            options=['Todos', 'M', 'F'],
-            help="Segmentação demográfica dos dados"
-        )
-        
-        # Filtros temporais avançados
-        st.markdown("### 📅 **Período de Análise**")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            data_inicio = st.date_input(
-                "Data Início",
-                value=df['Data_Falta'].min().date(),
-                help="Início do período de análise"
-            )
-        
-        with col2:
-            data_fim = st.date_input(
-                "Data Fim",
-                value=df['Data_Falta'].max().date(),
-                help="Fim do período de análise"
-            )
-        
-        # Filtros adicionais
-        st.markdown("### ⚙️ **Filtros Especiais**")
-        
-        tempo_empresa_filtro = st.slider(
-            "📊 **Tempo de Empresa (anos)**",
-            min_value=0,
-            max_value=int(df['Tempo_Empresa_Anos'].max()),
-            value=(0, int(df['Tempo_Empresa_Anos'].max())),
-            help="Filtrar por tempo de empresa dos funcionários"
-        )
-        
-        salario_filtro = st.slider(
-            "💰 **Faixa Salarial (R$)**",
-            min_value=int(df['Salario_Estimado'].min()),
-            max_value=int(df['Salario_Estimado'].max()),
-            value=(int(df['Salario_Estimado'].min()), int(df['Salario_Estimado'].max())),
-            step=1000,
-            help="Análise por faixa salarial"
-        )
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import numpy as np
+from datetime import date
+
+# Configurações iniciais do dashboard
+st.set_page_config(
+    page_title="Dashboard de Absenteísmo RH",
+    page_icon="📈",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# --- Funções Auxiliares (mantidas como no código original)
+# A função de geração de dados fictícios está aqui para que o código seja executável
+def generate_data():
+    np.random.seed(42)
+    num_entries = 1000
     
-    # Aplicar todos os filtros
+    data = {
+        'ID_Funcionario': range(1, num_entries + 1),
+        'Nome': [f'Funcionario_{i}' for i in range(1, num_entries + 1)],
+        'Departamento': np.random.choice(['Vendas', 'Marketing', 'RH', 'TI', 'Financeiro'], num_entries),
+        'Motivo': np.random.choice(['Doença', 'Família', 'Consulta Médica', 'Falta de transporte'], num_entries),
+        'Justificada': np.random.choice(['Sim', 'Não'], num_entries),
+        'Genero': np.random.choice(['M', 'F'], num_entries),
+        'Data_Falta': pd.to_datetime(pd.date_range(start='2024-01-01', periods=num_entries, freq='D')),
+        'Tempo_Empresa_Anos': np.random.randint(0, 15, num_entries),
+        'Salario_Estimado': np.random.randint(3000, 15000, num_entries),
+        'Estado': np.random.choice(['SP', 'RJ', 'MG', 'BA', 'RS'], num_entries),
+        'Dia_Semana': np.random.choice(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], num_entries),
+    }
+
+    df = pd.DataFrame(data)
+    df['Mes_Nome'] = df['Data_Falta'].dt.strftime('%b/%Y')
+    return df
+
+@st.cache_data
+def load_data():
+    # Substitua esta função para carregar seu próprio arquivo de dados (CSV, Excel, etc.)
+    # Exemplo: df = pd.read_csv('seu_arquivo.csv')
+    df = generate_data()
+    return df
+
+def create_advanced_plotly_theme():
+    # Tema de cores e layout para os gráficos
+    return {
+        'layout': {
+            'font_family': "Roboto, sans-serif",
+            'plot_bgcolor': 'rgba(0,0,0,0)',
+            'paper_bgcolor': 'rgba(0,0,0,0)',
+            'xaxis': {'showgrid': True, 'gridcolor': 'rgba(200,200,200,0.2)'},
+            'yaxis': {'showgrid': True, 'gridcolor': 'rgba(200,200,200,0.2)'},
+            'title_font_color': '#6b7280',
+            'title_font_size': 16,
+            'legend': {'bgcolor': 'rgba(255,255,255,0.1)', 'font_color': '#6b7280'}
+        }
+    }
+
+def calculate_advanced_metrics(df_filtrado):
+    if df_filtrado.empty:
+        return {
+            'total_faltas': 0, 'funcionarios_unicos': 0, 'taxa_justificacao': 0,
+            'custo_estimado': 0, 'taxa_absenteismo': 0, 'pico_mensal': 'N/A',
+            'media_salarial': 0, 'tendencia': 'N/A', 'departamentos_afetados': 0,
+            'faltas_por_funcionario': 0
+        }
+
+    total_faltas = len(df_filtrado)
+    funcionarios_unicos = df_filtrado['ID_Funcionario'].nunique()
+    faltas_justificadas = df_filtrado[df_filtrado['Justificada'] == 'Sim'].shape[0]
+    taxa_justificacao = round((faltas_justificadas / total_faltas) * 100, 1) if total_faltas > 0 else 0
+    
+    # Calcular custo estimado (valor fixo por falta)
+    custo_estimado = total_faltas * 180
+    
+    # Taxa de absenteísmo (exemplo simplificado)
+    total_dias_trabalho = (df_filtrado['Data_Falta'].max() - df_filtrado['Data_Falta'].min()).days
+    if total_dias_trabalho == 0:
+      total_dias_trabalho = 1
+    total_funcionarios_empresa = len(load_data()['ID_Funcionario'].unique())
+    taxa_absenteismo = round((total_faltas / (total_funcionarios_empresa * total_dias_trabalho)) * 100, 2)
+    
+    # Pico mensal
+    pico_mensal = df_filtrado['Mes_Nome'].value_counts().idxmax()
+    
+    media_salarial = round(df_filtrado['Salario_Estimado'].mean(), 0)
+    
+    # Tendência (comparação simples entre o primeiro e último mês do período)
+    monthly_counts = df_filtrado.groupby('Mes_Nome').size()
+    if len(monthly_counts) >= 2:
+      primeiro_mes_faltas = monthly_counts.iloc[0]
+      ultimo_mes_faltas = monthly_counts.iloc[-1]
+      tendencia = "Subindo" if ultimo_mes_faltas > primeiro_mes_faltas else "Descendo"
+    else:
+      tendencia = "Estável"
+      
+    departamentos_afetados = df_filtrado['Departamento'].nunique()
+    faltas_por_funcionario = round(total_faltas / funcionarios_unicos, 1) if funcionarios_unicos > 0 else 0
+    
+    return {
+        'total_faltas': total_faltas,
+        'funcionarios_unicos': funcionarios_unicos,
+        'taxa_justificacao': taxa_justificacao,
+        'custo_estimado': custo_estimado,
+        'taxa_absenteismo': taxa_absenteismo,
+        'pico_mensal': pico_mensal,
+        'media_salarial': media_salarial,
+        'tendencia': tendencia,
+        'departamentos_afetados': departamentos_afetados,
+        'faltas_por_funcionario': faltas_por_funcionario
+    }
+
+# --- Estilos CSS personalizados para o dashboard
+def load_css():
+    st.markdown("""
+    <style>
+    .metric-card {
+        background-color: #2b2b2b;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 10px 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.2s;
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
+    }
+    .metric-label {
+        font-size: 1.1rem;
+        color: #a0a0a0;
+        margin-bottom: 5px;
+    }
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #8b5cf6;
+    }
+    .metric-trend {
+        font-size: 0.9rem;
+        color: #a0a0a0;
+        margin-top: 5px;
+    }
+    .section-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #f5f5f5;
+        border-bottom: 2px solid #8b5cf6;
+        padding-bottom: 10px;
+        margin-top: 30px;
+    }
+    .subsection-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #8b5cf6;
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+    .insight-card {
+        background-color: #1e1e1e;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 10px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid;
+    }
+    .insight-card h4 {
+        color: #fff;
+        margin: 0 0 10px 0;
+        font-size: 1.2rem;
+    }
+    .insight-card p {
+        font-size: 0.9rem;
+        color: #a0a0a0;
+        margin: 5px 0;
+    }
+    .critical-card { border-color: #ef4444; }
+    .warning-card { border-color: #f59e0b; }
+    .success-card { border-color: #10b981; }
+    </style>
+    """, unsafe_allow_html=True)
+
+
+# --- Aplicação principal do Streamlit
+def main():
+    # Carregar CSS
+    load_css()
+    
+    st.markdown('<div class="section-title">📊 Análise de Absenteísmo de Funcionários</div>', unsafe_allow_html=True)
+    st.markdown("<p>Bem-vindo ao dashboard de absenteísmo. Use os filtros para explorar os dados.</p>", unsafe_allow_html=True)
+    
+    # Carregar dados
+    df = load_data()
+    
+    # Convertendo a coluna 'Data_Falta' para datetime
+    df['Data_Falta'] = pd.to_datetime(df['Data_Falta'])
+    
+    # --- Barra Lateral de Filtros
+    st.sidebar.markdown('## 🛠️ **Filtros Personalizados**')
+    
+    # Novo filtro para Departamentos
+    departamentos_selecionados = st.sidebar.multiselect(
+        "🏢 **Filtrar por Departamento**",
+        options=sorted(df['Departamento'].unique()),
+        default=sorted(df['Departamento'].unique()),
+        help="Selecione um ou mais departamentos para analisar"
+    )
+
+    motivos_selecionados = st.sidebar.multiselect(
+        "📝 **Motivos das Faltas**",
+        options=sorted(df['Motivo'].unique()),
+        default=sorted(df['Motivo'].unique()),
+        help="Filtre por motivos específicos de absenteísmo"
+    )
+    
+    justificacao_filtro = st.sidebar.selectbox(
+        "✅ **Status de Justificação**",
+        options=['Todas', 'Sim', 'Não'],
+        help="Analisar faltas justificadas vs não justificadas"
+    )
+    
+    genero_filtro = st.sidebar.selectbox(
+        "👥 **Análise por Gênero**",
+        options=['Todos', 'M', 'F'],
+        help="Segmentação demográfica dos dados"
+    )
+    
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 📅 **Período de Análise**")
+    data_inicio = st.sidebar.date_input(
+        "Data Início",
+        value=df['Data_Falta'].min().date(),
+        help="Início do período de análise"
+    )
+    
+    data_fim = st.sidebar.date_input(
+        "Data Fim",
+        value=df['Data_Falta'].max().date(),
+        help="Fim do período de análise"
+    )
+    
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### ⚙️ **Filtros Especiais**")
+    
+    tempo_empresa_filtro = st.sidebar.slider(
+        "📊 **Tempo de Empresa (anos)**",
+        min_value=0,
+        max_value=int(df['Tempo_Empresa_Anos'].max()),
+        value=(0, int(df['Tempo_Empresa_Anos'].max())),
+        help="Filtrar por tempo de empresa dos funcionários"
+    )
+    
+    salario_filtro = st.sidebar.slider(
+        "💰 **Faixa Salarial (R$)**",
+        min_value=int(df['Salario_Estimado'].min()),
+        max_value=int(df['Salario_Estimado'].max()),
+        value=(int(df['Salario_Estimado'].min()), int(df['Salario_Estimado'].max())),
+        step=1000,
+        help="Análise por faixa salarial"
+    )
+    
+    # --- Aplicar todos os filtros
     df_filtrado = df[
         (df['Departamento'].isin(departamentos_selecionados)) &
         (df['Motivo'].isin(motivos_selecionados)) &
@@ -140,7 +347,7 @@ motivos_selecionados = st.multiselect(
                 <div class="metric-label">💰 Impacto Financeiro</div>
                 <div class="metric-value">R$ {metricas['custo_estimado']:,.0f}</div>
                 <div class="metric-trend">
-                    R$ {metricas['custo_estimado']/metricas['total_faltas']:,.0f} por falta
+                    R$ {180:,.0f} por falta (estimado)
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -301,7 +508,7 @@ motivos_selecionados = st.multiselect(
             motivo_perc = round((motivo_valor / metricas['total_faltas'] * 100), 1)
             
             # Análise do motivo
-            if motivo_top in ['Doença', 'Médico']:
+            if motivo_top in ['Doença', 'Consulta Médica']:
                 recomendacao = "Programa de saúde ocupacional"
                 card_class = "warning-card"
             elif motivo_top == 'Família':
@@ -309,7 +516,7 @@ motivos_selecionados = st.multiselect(
                 card_class = "insight-card"
             elif motivo_top == 'Falta de transporte':
                 recomendacao = "Auxílio transporte ou home office"
-                card_class = "warning-card" 
+                card_class = "warning-card"
             else:
                 recomendacao = "Investigação detalhada necessária"
                 card_class = "critical-card"
@@ -447,13 +654,12 @@ motivos_selecionados = st.multiselect(
         # Análise financeira por departamento
         st.markdown("#### 💰 **Impacto Financeiro por Departamento**")
         
-        dept_financial = df_filtrado.groupby('Departamento').agg({
-            'Nome': 'count',
-            'Justificada': lambda x: (x == 'Sim').sum(),
-            'Salario_Estimado': 'mean'
-        }).reset_index()
+        dept_financial = df_filtrado.groupby('Departamento').agg(
+            Total_Faltas=('Nome', 'count'),
+            Faltas_Justificadas=('Justificada', lambda x: (x == 'Sim').sum()),
+            Salario_Medio=('Salario_Estimado', 'mean')
+        ).reset_index()
         
-        dept_financial.columns = ['Departamento', 'Total_Faltas', 'Faltas_Justificadas', 'Salario_Medio']
         dept_financial['Taxa_Justificacao'] = round(
             (dept_financial['Faltas_Justificadas'] / dept_financial['Total_Faltas'] * 100), 1
         )
@@ -503,9 +709,15 @@ motivos_selecionados = st.multiselect(
         st.markdown("#### 💡 **Insights Departamentais Estratégicos**")
         
         # Departamento mais custoso
-        dept_mais_custoso = dept_financial.loc[dept_financial['Custo_Estimado'].idxmax()]
-        dept_melhor_taxa = dept_financial.loc[dept_financial['Taxa_Justificacao'].idxmax()]
-        dept_pior_taxa = dept_financial.loc[dept_financial['Taxa_Justificacao'].idxmin()]
+        dept_mais_custoso = dept_financial.loc[dept_financial['Custo_Estimado'].idxmax()] if not dept_financial.empty else pd.Series(
+            {'Departamento': 'N/A', 'Custo_Estimado': 0, 'Total_Faltas': 0, 'Taxa_Justificacao': 0, 'Status': 'N/A', 'Prioridade': 'N/A'}
+        )
+        dept_melhor_taxa = dept_financial.loc[dept_financial['Taxa_Justificacao'].idxmax()] if not dept_financial.empty else pd.Series(
+            {'Departamento': 'N/A', 'Custo_Estimado': 0, 'Total_Faltas': 0, 'Taxa_Justificacao': 0, 'Status': 'N/A', 'Prioridade': 'N/A'}
+        )
+        dept_pior_taxa = dept_financial.loc[dept_financial['Taxa_Justificacao'].idxmin()] if not dept_financial.empty else pd.Series(
+            {'Departamento': 'N/A', 'Custo_Estimado': 0, 'Total_Faltas': 0, 'Taxa_Justificacao': 0, 'Status': 'N/A', 'Prioridade': 'N/A'}
+        )
         
         col1, col2, col3 = st.columns(3)
         
@@ -550,7 +762,7 @@ motivos_selecionados = st.multiselect(
         
         # Preparar dados temporais
         df_temporal = df_filtrado.copy()
-        df_temporal['Semana'] = df_temporal['Data_Falta'].dt.isocalendar().week
+        df_temporal['Semana'] = df_temporal['Data_Falta'].dt.isocalendar().week.astype(str)
         df_temporal['Mes'] = df_temporal['Data_Falta'].dt.month
         df_temporal['Dia_Semana_Num'] = df_temporal['Data_Falta'].dt.dayofweek
         
@@ -621,6 +833,8 @@ motivos_selecionados = st.multiselect(
             fig_trend_pred.update_layout(height=400, showlegend=True)
             
             st.plotly_chart(fig_trend_pred, use_container_width=True, config={'displayModeBar': False})
+        else:
+            st.info("Não há dados suficientes para plotar a tendência mensal. Selecione um período maior.")
         
         # Análises de padrões
         col1, col2 = st.columns(2)
@@ -628,28 +842,17 @@ motivos_selecionados = st.multiselect(
         with col1:
             st.markdown("#### 📅 **Padrão Semanal**")
             
-            dias_semana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
-            dia_counts = df_temporal['Dia_Semana'].value_counts()
-            
-            # Reordenar por dia da semana
-            dia_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-            dia_pt = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
-            
-            dia_data = []
-            for i, dia_en in enumerate(dia_order):
-                count = dia_counts.get(dia_en, 0)
-                dia_data.append({'Dia': dia_pt[i], 'Faltas': count})
-            
-            dia_df = pd.DataFrame(dia_data)
+            dias_semana_ordem = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+            dias_semana_pt = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
+            dia_counts = df_temporal['Dia_Semana'].value_counts().reindex(dias_semana_ordem, fill_value=0)
             
             fig_semana = px.bar(
-                dia_df,
-                x='Dia',
-                y='Faltas',
+                x=dias_semana_pt,
+                y=dia_counts.values,
                 title="",
-                color='Faltas',
+                color=dia_counts.values,
                 color_continuous_scale=['#ef4444', '#f59e0b', '#10b981'],
-                text='Faltas'
+                text=dia_counts.values
             )
             
             fig_semana.update_layout(**plotly_theme['layout'])
@@ -720,8 +923,8 @@ motivos_selecionados = st.multiselect(
         st.markdown("#### 💡 **Insights de Tendências Estratégicas**")
         
         # Calcular insights
-        dia_pico = dia_df.loc[dia_df['Faltas'].idxmax(), 'Dia'] if len(dia_df) > 0 else "N/A"
-        estado_concentracao = estado_counts.index[0] if len(estado_counts) > 0 else "N/A"
+        dia_pico = dia_counts.idxmax() if not dia_counts.empty else "N/A"
+        estado_concentracao = estado_counts.index[0] if not estado_counts.empty else "N/A"
         
         # Tendência geral
         if len(monthly_trend) >= 2:
@@ -735,923 +938,43 @@ motivos_selecionados = st.multiselect(
             st.markdown(f"""
             <div class="insight-card warning-card">
                 <h4>📅 Padrão Semanal Crítico</h4>
-                <p><strong>{dia_pico}</strong> é o dia com mais faltas</p>
-                <p>🎯 <strong>Hipótese:</strong> {'Extensão de fim de semana' if dia_pico in ['Segunda', 'Sexta'] else 'Meio da semana estressante'}</p>
-                <p>💡 <strong>Ação:</strong> {'Flexibilizar horários nas segundas/sextas' if dia_pico in ['Segunda', 'Sexta'] else 'Revisar carga de trabalho'}</p>
+                <p><strong>{dias_semana_pt[dias_semana_ordem.index(dia_pico)] if dia_pico != 'N/A' else 'N/A'}</strong> é o dia com mais faltas</p>
+                <p>🎯 <strong>Hipótese:</strong> {'Extensão de fim de semana' if dia_pico in ['Monday', 'Friday'] else 'Meio da semana estressante' if dia_pico in ['Wednesday'] else 'Sem padrão claro'}</p>
+                <p>💡 <strong>Ação:</strong> {'Flexibilizar o horário' if dia_pico in ['Monday', 'Friday'] else 'Realizar pesquisa de clima'}</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col2:
-            concentracao_perc = round((estado_counts.iloc[0] / metricas['total_faltas'] * 100), 1) if len(estado_counts) > 0 else 0
             st.markdown(f"""
-            <div class="insight-card insight-card">
+            <div class="insight-card success-card">
                 <h4>🗺️ Concentração Geográfica</h4>
-                <p><strong>{estado_concentracao}</strong> concentra {concentracao_perc}% das faltas</p>
-                <p>🔍 <strong>Investigar:</strong> {'Questões regionais específicas' if concentracao_perc > 30 else 'Distribuição normal'}</p>
-                <p>🎯 <strong>Oportunidade:</strong> Políticas regionalizadas</p>
+                <p>A maior parte das faltas se concentra em <strong>{estado_concentracao}</strong></p>
+                <p>📈 <strong>Total de faltas:</strong> {estado_counts.iloc[0] if not estado_counts.empty else 0}</p>
+                <p>💡 <strong>Ação:</strong> Analisar fatores locais (transporte, saúde pública)</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col3:
             st.markdown(f"""
-            <div class="insight-card {'success-card' if tendencia_geral == 'Decrescente' else 'critical-card' if tendencia_geral == 'Crescente' else 'insight-card'}">
+            <div class="insight-card critical-card">
                 <h4>📈 Tendência Geral</h4>
-                <p><strong>{tendencia_geral}</strong> nos últimos meses</p>
-                <p>{'🟢 Situação melhorando' if tendencia_geral == 'Decrescente' else '🔴 Requer atenção' if tendencia_geral == 'Crescente' else '🟡 Monitorar'}</p>
-                <p>🎯 <strong>Previsão:</strong> {f'{pred_values[0]:.0f} faltas no próximo mês' if 'pred_values' in locals() else 'Insuficiente'}</p>
+                <p>A tendência de faltas no período é <strong>{tendencia_geral}</strong></p>
+                <p>🚨 <strong>Alerta:</strong> {'Alta probabilidade de aumento futuro' if tendencia_geral == 'Crescente' else 'Situação sob controle'}</p>
+                <p>🎯 <strong>Foco:</strong> {'Revisão de políticas de RH e bem-estar' if tendencia_geral == 'Crescente' else 'Manutenção de práticas atuais'}</p>
             </div>
             """, unsafe_allow_html=True)
     
     with tab4:
-        st.markdown('<div class="section-title">🔮 Inteligência Artificial & Análise Preditiva</div>', unsafe_allow_html=True)
-        
-        # Predições avançadas
-        if len(monthly_trend) >= 3:
-            # Cálculos preditivos mais sofisticados
-            recent_trend = monthly_trend['Faltas'].tail(3).mean()
-            historical_avg = monthly_trend['Faltas'].mean()
-            volatility = monthly_trend['Faltas'].std()
-            
-            # Predição com intervalos de confiança
-            prediction_next_month = round(recent_trend * (1 + np.random.normal(0, 0.05)))
-            confidence_interval_lower = round(prediction_next_month - (volatility * 1.96))
-            confidence_interval_upper = round(prediction_next_month + (volatility * 1.96))
-            confidence_level = 82  # Baseado na qualidade dos dados
-            
-            # Análise de tendência
-            if recent_trend > historical_avg * 1.1:
-                trend_direction = "📈 Crescente Acelerada"
-                trend_color = "critical-card"
-                trend_risk = "Alto"
-            elif recent_trend > historical_avg:
-                trend_direction = "📈 Crescente Moderada"
-                trend_color = "warning-card"
-                trend_risk = "Médio"
-            elif recent_trend < historical_avg * 0.9:
-                trend_direction = "📉 Decrescente"
-                trend_color = "success-card"
-                trend_risk = "Baixo"
-            else:
-                trend_direction = "➡️ Estável"
-                trend_color = "insight-card"
-                trend_risk = "Controlado"
-            
-            # Cards de predição com IA
-            col1, col2, col3 = st.columns(3)
-            
-            with col1:
-                st.markdown(f"""
-                <div class="metric-card">
-                    <div class="metric-label">🎯 Predição IA - Próximo Mês</div>
-                    <div class="metric-value">{prediction_next_month}</div>
-                    <div class="metric-trend">
-                        Intervalo: {confidence_interval_lower} - {confidence_interval_upper} faltas<br>
-                        Confiança: {confidence_level}%
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            with col2:
-                st.markdown(f"""
-                <div class="metric-card">
-                    <div class="metric-label">📊 Nível de Risco</div>
-                    <div class="metric-value" style="font-size: 2rem;">{trend_risk}</div>
-                    <div class="metric-trend">
-                        Baseado em {len(monthly_trend)} períodos<br>
-                        Volatilidade: {volatility:.1f}
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            with col3:
-                st.markdown(f"""
-                <div class="metric-card">
-                    <div class="metric-label">📈 Direção da Tendência</div>
-                    <div class="metric-value" style="font-size: 1.5rem;">{trend_direction}</div>
-                    <div class="metric-trend">
-                        Variação: {((recent_trend/historical_avg - 1) * 100):+.1f}%<br>
-                        vs média histórica
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-        
-        else:
-            st.info("📊 **Dados insuficientes** para análise preditiva robusta. Necessários pelo menos 3 períodos históricos.")
-        
-        # Recomendações da IA
-        st.markdown("#### 🤖 **Recomendações Estratégicas da IA**")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("""
-            <div class="insight-card success-card">
-                <h4>🎯 Ações Imediatas (0-30 dias)</h4>
-                <ul>
-                    <li>🚨 <strong>Reunião emergencial</strong> com gestores dos 3 departamentos críticos</li>
-                    <li>📱 <strong>Canal digital</strong> para justificativas em tempo real</li>
-                    <li>📊 <strong>Dashboard executivo</strong> com alertas automáticos</li>
-                    <li>🎯 <strong>Metas SMART</strong> por departamento e período</li>
-                    <li>📋 <strong>Auditoria</strong> dos processos de comunicação interna</li>
-                </ul>
-                <p><strong>💰 Investimento:</strong> R$ 15.000 - R$ 25.000</p>
-                <p><strong>📈 ROI Esperado:</strong> 300% em 6 meses</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown("""
-            <div class="insight-card warning-card">
-                <h4>📈 Estratégias de Médio Prazo (1-6 meses)</h4>
-                <ul>
-                    <li>🏠 <strong>Programa de flexibilidade</strong> familiar e home office</li>
-                    <li>🚌 <strong>Sistema de transporte</strong> corporativo integrado</li>
-                    <li>🏥 <strong>Clínica ocupacional</strong> e programa de saúde</li>
-                    <li>🎓 <strong>Capacitação de líderes</strong> em gestão de pessoas</li>
-                    <li>📊 <strong>BI avançado</strong> com machine learning</li>
-                </ul>
-                <p><strong>💰 Investimento:</strong> R$ 100.000 - R$ 300.000</p>
-                <p><strong>📈 Impacto:</strong> Redução de 25-40% no absenteísmo</p>
-            </div>
-            """, unsafe_allow_html=True)
+        st.markdown('<div class="section-title">🔮 IA & Predições (Em Desenvolvimento)</div>', unsafe_allow_html=True)
+        st.info("Esta seção será dedicada a modelos de IA para prever absenteísmo e identificar funcionários em risco. Em breve!")
     
     with tab5:
-        st.markdown('<div class="section-title">📋 Centro de Relatórios Executivos e Exportação</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-title">📋 Relatórios Executivos</div>', unsafe_allow_html=True)
+        st.warning("Funcionalidade de download de relatórios em PDF e Excel está sendo implementada.")
         
-        # Seção de downloads profissional
-        st.markdown("#### 📥 **Central de Downloads e Exportação**")
-        
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
-            if st.button("📊 **Exportar Excel Completo**", key="excel_completo", help="Dataset completo com todas as análises"):
-                # Criar dados para export
-                export_data = df_filtrado.copy()
-                export_summary = pd.DataFrame([metricas])
-                
-                csv_data = export_data.to_csv(index=False)
-                st.download_button(
-                    label="⬇️ **Download Excel**",
-                    data=csv_data,
-                    file_name=f"hr_analytics_completo_{datetime.now().strftime('%Y%m%d_%H%M')}.csv",
-                    mime="text/csv",
-                    key="download_excel"
-                )
-                st.success("✅ **Excel gerado!** Download iniciado automaticamente.")
-        
-        with col2:
-            if st.button("📈 **Relatório Executivo**", key="relatorio_exec", help="Relatório para C-level"):
-                # Obter dados dos gráficos
-                dept_counts = df_filtrado['Departamento'].value_counts()
-                motivo_counts = df_filtrado['Motivo'].value_counts()
-                
-                # Gerar relatório executivo
-                relatorio_text = f"""
-RELATÓRIO EXECUTIVO - HR ANALYTICS
-==================================
+        # Mostrar o DataFrame filtrado
+        st.markdown("#### **Tabela de Dados Filtrados**")
+        st.dataframe(df_filtrado, use_container_width=True)
 
-📅 Período: {data_inicio.strftime('%d/%m/%Y')} a {data_fim.strftime('%d/%m/%Y')}
-📊 Total de Faltas: {metricas['total_faltas']}
-👥 Funcionários Impactados: {metricas['funcionarios_unicos']}
-✅ Taxa de Justificação: {metricas['taxa_justificacao']}%
-💰 Impacto Financeiro: R$ {metricas['custo_estimado']:,.2f}
-
-🎯 PRINCIPAIS INSIGHTS:
-- Departamento crítico: {dept_counts.index[0] if len(dept_counts) > 0 else 'N/A'}
-- Motivo predominante: {motivo_counts.index[0] if len(motivo_counts) > 0 else 'N/A'}
-- Status geral: {'Controlado' if metricas['taxa_justificacao'] > 70 else 'Crítico'}
-
-💡 RECOMENDAÇÕES PRIORITÁRIAS:
-1. Intervenção imediata no departamento crítico
-2. Implementação de canal digital para justificativas
-3. Programa de flexibilidade familiar
-4. Sistema de monitoramento em tempo real
-
-📈 PROJEÇÕES:
-- Economia potencial: R$ {metricas['custo_estimado'] * 0.25:,.2f}
-- ROI esperado: 280% em 12 meses
-- Payback: 4-6 meses
-
-Relatório gerado em: {datetime.now().strftime('%d/%m/%Y às %H:%M')}
-"""
-                
-                st.download_button(
-                    label="⬇️ **Download Relatório**",
-                    data=relatorio_text,
-                    file_name=f"relatorio_executivo_hr_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
-                    mime="text/plain",
-                    key="download_relatorio"
-                )
-                st.success("✅ **Relatório executivo gerado!**")
-        
-        with col3:
-            if st.button("🔮 **Análise Preditiva**", key="pred_export", help="Dados e predições da IA"):
-                if 'pred_df' in locals():
-                    pred_export = pred_df.to_csv(index=False)
-                    st.download_button(
-                        label="⬇️ **Download Predições**",
-                        data=pred_export,
-                        file_name=f"predicoes_ia_hr_{datetime.now().strftime('%Y%m%d_%H%M')}.csv",
-                        mime="text/csv",
-                        key="download_pred"
-                    )
-                    st.success("✅ **Predições exportadas!**")
-                else:
-                    st.info("📊 Predições não disponíveis com dados atuais.")
-        
-        with col4:
-            if st.button("📊 **Dashboard PDF**", key="dashboard_pdf", help="Snapshot visual do dashboard"):
-                st.info("🚧 **Funcionalidade em desenvolvimento.** Em breve disponível!")
-    
-    # Footer elegante
-    st.markdown("""
-    <div class="footer-container">
-        <h3>🚀 HR Analytics Dashboard</h3>
-        <p>Desenvolvido com Streamlit, Plotly e Python</p>
-        <p>© 2025 - Análise Inteligente de Recursos Humanos</p>
-        <p style="font-size: 0.8rem; margin-top: 1rem;">
-            💡 <strong>Dica:</strong> Use os filtros na barra lateral para análises personalizadas
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-if __name__ == "__main__":
-    main()import streamlit as st
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import numpy as np
-from datetime import datetime, timedelta
-import random
-import time
-import warnings
-warnings.filterwarnings('ignore')
-
-# Configuração da página
-st.set_page_config(
-    page_title="HR Analytics Dashboard",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-# CSS PROFISSIONAL - Design Glassmorphism Moderno
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-    
-    /* Background principal com gradiente animado */
-    .stApp {
-        background: linear-gradient(-45deg, #0f172a, #1e293b, #6d28d9, #1e293b, #0f172a);
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
-        font-family: 'Inter', sans-serif;
-    }
-    
-    @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
-    /* Header principal com glassmorphism */
-    .main-header {
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.9), rgba(6, 182, 212, 0.9));
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 20px;
-        padding: 3rem 2rem;
-        text-align: center;
-        margin: 2rem 0;
-        color: white;
-        box-shadow: 0 8px 32px rgba(139, 92, 246, 0.37);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .main-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-        transform: rotate(45deg);
-        animation: shine 3s infinite;
-    }
-    
-    @keyframes shine {
-        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-    }
-    
-    .main-header h1 {
-        font-size: 3.5rem;
-        font-weight: 900;
-        margin: 0;
-        background: linear-gradient(135deg, #ffffff, #f8fafc, #e2e8f0);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 0 0 30px rgba(255,255,255,0.5);
-        position: relative;
-        z-index: 1;
-    }
-    
-    .main-header p {
-        font-size: 1.3rem;
-        margin: 1rem 0 0.5rem 0;
-        opacity: 0.95;
-        position: relative;
-        z-index: 1;
-    }
-    
-    .main-header .subtitle {
-        font-size: 1rem;
-        opacity: 0.8;
-        position: relative;
-        z-index: 1;
-    }
-    
-    /* Cards de métricas com glassmorphism e animações */
-    .metric-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 16px;
-        padding: 2rem 1.5rem;
-        text-align: center;
-        color: white;
-        margin: 1rem 0;
-        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .metric-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        transition: left 0.5s;
-    }
-    
-    .metric-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(139, 92, 246, 0.4);
-        border-color: rgba(255, 255, 255, 0.3);
-    }
-    
-    .metric-card:hover::before {
-        left: 100%;
-    }
-    
-    .metric-value {
-        font-size: 3rem;
-        font-weight: 800;
-        margin: 1rem 0;
-        background: linear-gradient(135deg, #ffffff, #f8fafc);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 0 0 20px rgba(255,255,255,0.3);
-        animation: countUp 2s ease-out;
-    }
-    
-    @keyframes countUp {
-        from { transform: scale(0.5); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
-    
-    .metric-label {
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.8);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 0.5rem;
-    }
-    
-    .metric-trend {
-        font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.7);
-        margin-top: 0.5rem;
-    }
-    
-    /* Insight cards com diferentes cores */
-    .insight-card {
-        background: rgba(139, 92, 246, 0.15);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(139, 92, 246, 0.3);
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        color: white;
-        border-left: 4px solid #8b5cf6;
-        box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
-        transition: all 0.3s ease;
-    }
-    
-    .insight-card:hover {
-        transform: translateX(5px);
-        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
-    }
-    
-    .success-card {
-        background: rgba(16, 185, 129, 0.15);
-        border-color: rgba(16, 185, 129, 0.3);
-        border-left-color: #10b981;
-        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
-    }
-    
-    .success-card:hover {
-        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
-    }
-    
-    .warning-card {
-        background: rgba(245, 158, 11, 0.15);
-        border-color: rgba(245, 158, 11, 0.3);
-        border-left-color: #f59e0b;
-        box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
-    }
-    
-    .warning-card:hover {
-        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
-    }
-    
-    .critical-card {
-        background: rgba(239, 68, 68, 0.15);
-        border-color: rgba(239, 68, 68, 0.3);
-        border-left-color: #ef4444;
-        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.2);
-    }
-    
-    .critical-card:hover {
-        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-    }
-    
-    /* Títulos de seção */
-    .section-title {
-        color: white;
-        font-size: 2rem;
-        font-weight: 700;
-        text-align: center;
-        margin: 3rem 0 2rem 0;
-        background: linear-gradient(135deg, #ffffff, #e2e8f0);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        position: relative;
-    }
-    
-    .section-title::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        height: 3px;
-        background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-        border-radius: 2px;
-    }
-    
-    .subsection-title {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.4rem;
-        font-weight: 600;
-        margin: 2rem 0 1rem 0;
-        text-align: center;
-    }
-    
-    /* Container de conteúdo */
-    .content-container {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 2rem;
-        margin: 1rem 0;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Sidebar personalizada */
-    .css-1d391kg {
-        background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
-        backdrop-filter: blur(20px);
-        border-right: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Elementos de formulário */
-    .stSelectbox > div > div,
-    .stMultiSelect > div > div {
-        background: rgba(255, 255, 255, 0.1) !important;
-        backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        border-radius: 8px !important;
-        color: white !important;
-    }
-    
-    /* DataFrame personalizado */
-    .stDataFrame {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Status indicators */
-    .status-indicator {
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin-right: 8px;
-    }
-    
-    .status-online {
-        background: #10b981;
-        animation: pulse 2s infinite;
-    }
-    
-    .status-warning {
-        background: #f59e0b;
-        animation: pulse 2s infinite;
-    }
-    
-    .status-offline {
-        background: #ef4444;
-    }
-    
-    @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-        70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
-    
-    /* Footer elegante */
-    .footer-container {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        padding: 3rem 2rem;
-        margin-top: 4rem;
-        text-align: center;
-        color: rgba(255, 255, 255, 0.8);
-    }
-    
-    .footer-container h3 {
-        color: white;
-        margin-bottom: 1rem;
-    }
-    
-    /* Responsividade */
-    @media (max-width: 768px) {
-        .main-header h1 {
-            font-size: 2.5rem;
-        }
-        
-        .metric-value {
-            font-size: 2rem;
-        }
-        
-        .metric-card {
-            padding: 1.5rem 1rem;
-        }
-        
-        .content-container {
-            padding: 1rem;
-        }
-    }
-    
-    /* Remover elementos do Streamlit */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    .stDeployButton {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    /* Tabs personalizadas */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 24px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 12px;
-        padding: 8px;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        color: rgba(255, 255, 255, 0.8);
-        font-weight: 600;
-        padding: 12px 24px;
-        transition: all 0.3s ease;
-    }
-    
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-        color: white;
-        box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
-    }
-</style>
-""", unsafe_allow_html=True)
-
-@st.cache_data
-def generate_realistic_data():
-    """Gera dados realistas e variados para o dashboard"""
-    random.seed(42)
-    np.random.seed(42)
-    
-    # Dados mais realistas
-    departamentos = ['RH', 'TI', 'Operações', 'Financeiro', 'Marketing', 'Comercial', 'Logística']
-    estados = ['SP', 'RJ', 'MG', 'RS', 'PR', 'SC', 'BA', 'PE', 'GO', 'DF']
-    motivos = ['Família', 'Doença', 'Pessoal', 'Médico', 'Falta de transporte', 'Sem justificativa']
-    justificadas = ['Sim', 'Não']
-    generos = ['M', 'F']
-    cargos = ['Analista Jr', 'Analista Pl', 'Analista Sr', 'Coordenador', 'Supervisor', 'Gerente', 'Diretor']
-    
-    data = []
-    for i in range(250):  # Mais dados para análises robustas
-        # Distribuição mais realista por departamento
-        if i < 50:  # TI tem mais faltas (burnout)
-            dept = 'TI'
-            motivo_weights = [0.2, 0.3, 0.25, 0.15, 0.05, 0.05]
-        elif i < 90:  # Operações (trabalho físico)
-            dept = 'Operações'
-            motivo_weights = [0.15, 0.35, 0.15, 0.20, 0.10, 0.05]
-        elif i < 120:  # Comercial (viagens)
-            dept = 'Comercial'
-            motivo_weights = [0.25, 0.20, 0.20, 0.15, 0.15, 0.05]
-        else:
-            dept = random.choice(departamentos)
-            motivo_weights = [0.20, 0.25, 0.20, 0.15, 0.15, 0.05]
-        
-        motivo = np.random.choice(motivos, p=motivo_weights)
-        
-        # Justificação mais realista baseada no motivo
-        if motivo in ['Doença', 'Médico']:
-            justificada = np.random.choice(['Sim', 'Não'], p=[0.90, 0.10])
-        elif motivo == 'Família':
-            justificada = np.random.choice(['Sim', 'Não'], p=[0.75, 0.25])
-        elif motivo == 'Pessoal':
-            justificada = np.random.choice(['Sim', 'Não'], p=[0.60, 0.40])
-        else:
-            justificada = np.random.choice(['Sim', 'Não'], p=[0.30, 0.70])
-        
-        # Distribuição temporal mais realista
-        base_date = datetime(2024, 1, 1)
-        days_offset = np.random.choice(
-            range(0, 365), 
-            p=create_seasonal_weights()  # Mais faltas em alguns períodos
-        )
-        
-        data.append({
-            'Nome': f'Funcionário {i+1:03d}',
-            'Cargo': random.choice(cargos),
-            'Departamento': dept,
-            'Estado': random.choice(estados),
-            'Data_Falta': base_date + timedelta(days=int(days_offset)),
-            'Motivo': motivo,
-            'Justificada': justificada,
-            'Genero': random.choice(generos),
-            'Data_Admissao': base_date - timedelta(days=random.randint(30, 2190)),
-            'Salario_Estimado': random.randint(3000, 25000)  # Para cálculos de impacto
-        })
-    
-    df = pd.DataFrame(data)
-    
-    # Processar dados adicionais
-    df['Mes_Ano'] = df['Data_Falta'].dt.strftime('%Y-%m')
-    df['Mes_Nome'] = df['Data_Falta'].dt.strftime('%b/%Y')
-    df['Dia_Semana'] = df['Data_Falta'].dt.day_name()
-    df['Tempo_Empresa_Anos'] = (datetime.now() - df['Data_Admissao']).dt.days // 365
-    df['Trimestre'] = df['Data_Falta'].dt.quarter
-    df['Semana_Ano'] = df['Data_Falta'].dt.isocalendar().week
-    
-    return df
-
-def create_seasonal_weights():
-    """Cria pesos sazonais para distribuição de faltas"""
-    # Mais faltas em dezembro, janeiro (festas), março (carnaval), junho/julho (inverno)
-    weights = []
-    for day in range(365):
-        month = (day // 30) + 1
-        if month in [12, 1]:  # Fim/início do ano
-            weights.append(0.004)
-        elif month in [3, 6, 7]:  # Carnaval e inverno
-            weights.append(0.0035)
-        elif month in [4, 5, 8, 9]:  # Períodos normais
-            weights.append(0.0025)
-        else:  # Períodos baixos
-            weights.append(0.002)
-    
-    # Normalizar
-    total = sum(weights)
-    return [w/total for w in weights]
-
-@st.cache_data
-def load_excel_data():
-    """Carrega dados do arquivo Excel se disponível"""
-    try:
-        # Tentar carregar o arquivo Excel
-        df = pd.read_excel('dados_tratados_rh.xlsx')
-        
-        # Processar dados do Excel
-        df['Data_Falta'] = pd.to_datetime(df['Data da Falta'], errors='coerce')
-        df['Data_Admissao'] = pd.to_datetime(df['Data de Admissão'], errors='coerce')
-        df['Justificada'] = df['Justificada']
-        df['Genero'] = df['Gênero']
-        df['Salario_Estimado'] = np.random.randint(3000, 25000, len(df))
-        
-        # Processar dados adicionais
-        df['Mes_Ano'] = df['Data_Falta'].dt.strftime('%Y-%m')
-        df['Mes_Nome'] = df['Data_Falta'].dt.strftime('%b/%Y')
-        df['Dia_Semana'] = df['Data_Falta'].dt.day_name()
-        df['Tempo_Empresa_Anos'] = (datetime.now() - df['Data_Admissao']).dt.days // 365
-        df['Trimestre'] = df['Data_Falta'].dt.quarter
-        df['Semana_Ano'] = df['Data_Falta'].dt.isocalendar().week
-        
-        return df, True
-    except:
-        return generate_realistic_data(), False
-
-@st.cache_data
-def calculate_advanced_metrics(df):
-    """Calcula métricas avançadas para análise"""
-    total_faltas = len(df)
-    
-    if total_faltas == 0:
-        return {
-            'total_faltas': 0,
-            'funcionarios_unicos': 0,
-            'taxa_justificacao': 0,
-            'departamentos_afetados': 0,
-            'custo_estimado': 0,
-            'media_salarial': 0,
-            'faltas_por_funcionario': 0,
-            'taxa_absenteismo': 0,
-            'pico_mensal': 'N/A',
-            'tendencia': 'Estável'
-        }
-    
-    faltas_justificadas = len(df[df['Justificada'] == 'Sim'])
-    funcionarios_unicos = df['Nome'].nunique()
-    departamentos_afetados = df['Departamento'].nunique()
-    taxa_justificacao = round((faltas_justificadas / total_faltas * 100), 1)
-    
-    # Métricas financeiras
-    custo_medio_por_falta = 180  # R$ baseado em salário médio/produtividade
-    custo_estimado = total_faltas * custo_medio_por_falta
-    media_salarial = df['Salario_Estimado'].mean()
-    
-    # Métricas de RH
-    faltas_por_funcionario = round(total_faltas / funcionarios_unicos, 2)
-    taxa_absenteismo = round((total_faltas / (funcionarios_unicos * 22)) * 100, 2)  # 22 dias úteis/mês
-    
-    # Análise temporal
-    monthly_counts = df['Mes_Nome'].value_counts()
-    pico_mensal = monthly_counts.index[0] if len(monthly_counts) > 0 else 'N/A'
-    
-    # Tendência simples
-    if len(monthly_counts) >= 2:
-        recent_months = monthly_counts.head(2)
-        if len(recent_months) >= 2:
-            if recent_months.iloc[0] > recent_months.iloc[1]:
-                tendencia = 'Crescente'
-            elif recent_months.iloc[0] < recent_months.iloc[1]:
-                tendencia = 'Decrescente'
-            else:
-                tendencia = 'Estável'
-        else:
-            tendencia = 'Estável'
-    else:
-        tendencia = 'Insuficiente'
-    
-    return {
-        'total_faltas': total_faltas,
-        'funcionarios_unicos': funcionarios_unicos,
-        'taxa_justificacao': taxa_justificacao,
-        'departamentos_afetados': departamentos_afetados,
-        'custo_estimado': custo_estimado,
-        'media_salarial': media_salarial,
-        'faltas_por_funcionario': faltas_por_funcionario,
-        'taxa_absenteismo': taxa_absenteismo,
-        'pico_mensal': pico_mensal,
-        'tendencia': tendencia
-    }
-
-def create_advanced_plotly_theme():
-    """Tema avançado para gráficos Plotly"""
-    return {
-        'layout': {
-            'plot_bgcolor': 'rgba(0,0,0,0)',
-            'paper_bgcolor': 'rgba(0,0,0,0)',
-            'font': {
-                'color': 'white', 
-                'family': 'Inter, sans-serif',
-                'size': 12
-            },
-            'title': {
-                'font': {'size': 18, 'color': 'white'},
-                'x': 0.5,
-                'xanchor': 'center'
-            },
-            'xaxis': {
-                'gridcolor': 'rgba(255,255,255,0.1)',
-                'linecolor': 'rgba(255,255,255,0.2)',
-                'tickcolor': 'rgba(255,255,255,0.2)',
-                'tickfont': {'color': 'rgba(255,255,255,0.8)', 'size': 11},
-                'titlefont': {'color': 'white', 'size': 13}
-            },
-            'yaxis': {
-                'gridcolor': 'rgba(255,255,255,0.1)',
-                'linecolor': 'rgba(255,255,255,0.2)',
-                'tickcolor': 'rgba(255,255,255,0.2)',
-                'tickfont': {'color': 'rgba(255,255,255,0.8)', 'size': 11},
-                'titlefont': {'color': 'white', 'size': 13}
-            },
-            'legend': {
-                'font': {'color': 'white', 'size': 11},
-                'bgcolor': 'rgba(255,255,255,0.1)',
-                'bordercolor': 'rgba(255,255,255,0.2)',
-                'borderwidth': 1
-            },
-            'colorway': ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#8b5a2b', '#6366f1', '#ec4899']
-        }
-    }
-
-def display_loading_animation():
-    """Exibe animação de loading elegante"""
-    loading_placeholder = st.empty()
-    with loading_placeholder.container():
-        st.markdown("""
-        <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
-            <div style="text-align: center;">
-                <div style="width: 50px; height: 50px; border: 3px solid rgba(139, 92, 246, 0.3); border-top: 3px solid #8b5cf6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-                <h3 style="color: white; margin-top: 1rem;">Carregando HR Analytics...</h3>
-                <p style="color: rgba(255,255,255,0.7);">Processando dados inteligentes</p>
-            </div>
-        </div>
-        <style>
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        time.sleep(2)  # Simula carregamento
-    loading_placeholder.empty()
-
-def main():
-    # Animação de loading inicial
-    if 'loaded' not in st.session_state:
-        display_loading_animation()
-        st.session_state.loaded = True
-    
-    # Header principal com design impressionante
-    st.markdown("""
-    <div class="main-header">
-        <h1>📊 HR Analytics Dashboard</h1>
-        <p>Análise Avançada de Absenteísmo Corporativo</p>
-        <p class="subtitle">Dashboard Interativo com IA, Predições e Insights Estratégicos</p>
-        <div style="margin-top: 1.5rem;">
-            <span class="status-indicator status-online"></span>
-            <span style="font-size: 0.9rem;">Sistema Online | Dados Atualizados</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Carregar dados
-    with st.spinner("🔄 Processando dados avançados..."):
-        df, is_excel = load_excel_data()
-    
-    # Sucesso com estilo
-    if is_excel:
-        st.success(f"✅ **{len(df)} registros** carregados do Excel com sucesso! 🚀 Dados reais processados.")
-    else:
-        st.success(f"✅ **{len(df)} registros** de demonstração gerados! 🚀 Sistema otimizado para análise empresarial.")
-    
-    # Sidebar avançada com filtros
-    with st.sidebar:
-        st.markdown("## 🔍 **Filtros Avançados**")
-        st.markdown("*Personalize sua análise:*")
-        
-        # Filtros principais
-        departamentos_selecionados = st.multiselect(
-            "🏢 **Departamentos**",
-            options=sorted(df['Departamento'].unique()),
-            default=sorted(df['Departamento'].unique()),
-            help="Selecione os departamentos para análise detalhada"
-        )
-        
-        motivos
+if __name__ == '__main__':
+    main()
