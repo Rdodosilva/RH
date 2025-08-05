@@ -1,0 +1,26 @@
+[global]
+developmentMode = false
+
+[server]
+runOnSave = true
+port = 8501
+
+[browser]
+serverAddress = "localhost"
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#8b5cf6"
+backgroundColor = "#0e1117"
+secondaryBackgroundColor = "#262730"
+textColor = "#fafafa"
+font = "sans serif"
+
+[client]
+caching = true
+
+[runner]
+magicEnabled = true
+
+[logger]
+level = "info"
