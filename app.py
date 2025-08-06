@@ -613,7 +613,8 @@ def display_loading():
     loading_placeholder = st.empty()
     with loading_placeholder.container():
         st.markdown("""
-        <div class="premium-loadingdef display_loading():
+        <div class="premium-loading
+def display_loading():
     """Loading premium"""
     loading_placeholder = st.empty()
     with loading_placeholder.container():
@@ -1227,7 +1228,125 @@ Relatório gerado pelo HR Analytics Intelligence Suite
                 
                 <div style="background: rgba(139, 92, 246, 0.15); border-radius: 15px; padding: 2rem; border-left: 6px solid #8b5cf6;">
                     <h3 style="color: #8b5cf6;">📊 SITUAÇÃO ATUAL</h3>
-                    <p><strong>Ausências:</strong> {metricas['total_ausencias']:,} registros</p># -*- coding: utf-8 -*-
+                    <p><strong>Ausências:</strong> {metricas['total_ausencias']:,} registros</p>
+                    <p><strong>Colaboradores:</strong> {metricas['funcionarios_impactados']:,} pessoas</p>
+                    <p><strong>Conformidade:</strong> {metricas['taxa_justificacao']}%</p>
+                    <p><strong>Impacto:</strong> R$ {metricas['impacto_financeiro']:,.0f}</p>
+                    <p><strong>Score:</strong> {metricas['score_rh']}/100</p>
+                </div>
+                
+                <div style="background: rgba(16, 185, 129, 0.15); border-radius: 15px; padding: 2rem; border-left: 6px solid #10b981;">
+                    <h3 style="color: #10b981;">🎯 PONTOS FORTES</h3>
+                    <p>✅ Sistema de monitoramento ativo</p>
+                    <p>✅ Dados estruturados</p>
+                    <p>✅ {'Score acima da média' if metricas['score_rh'] > 75 else 'Base sólida'}</p>
+                    <p>✅ Dashboard com IA</p>
+                    <p>✅ Visibilidade total</p>
+                </div>
+                
+                <div style="background: rgba(245, 158, 11, 0.15); border-radius: 15px; padding: 2rem; border-left: 6px solid #f59e0b;">
+                    <h3 style="color: #f59e0b;">⚠️ OPORTUNIDADES</h3>
+                    <p>🔍 {'Otimizar conformidade' if metricas['taxa_justificacao'] < 85 else 'Manter excelência'}</p>
+                    <p>🔍 Reduzir ausências críticas</p>
+                    <p>🔍 Analytics preditivos</p>
+                    <p>🔍 Benchmarking contínuo</p>
+                    <p>🔍 ROI de 280% estimado</p>
+                </div>
+                
+                <div style="background: rgba(239, 68, 68, 0.15); border-radius: 15px; padding: 2rem; border-left: 6px solid #ef4444;">
+                    <h3 style="color: #ef4444;">🚀 PRÓXIMOS PASSOS</h3>
+                    <p>1. Aprovação de budget</p>
+                    <p>2. Task force multidisciplinar</p>
+                    <p>3. Quick wins em 30 dias</p>
+                    <p>4. IA preditiva</p>
+                    <p>5. Review trimestral</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: rgba(255, 255, 255, 0.05); border-radius: 15px;">
+                <h3 style="margin-bottom: 1rem;">💡 RECOMENDAÇÃO ESTRATÉGICA</h3>
+                <p style="font-size: 1.1rem; line-height: 1.6;">
+                    Implementar <strong>programa integrado de gestão de absenteísmo</strong> com foco em 
+                    <span style="color: #8b5cf6;">prevenção inteligente</span>, 
+                    <span style="color: #06b6d4;">comunicação digital</span> e 
+                    <span style="color: #10b981;">suporte proativo</span>.
+                </p>
+                <div style="margin-top: 2rem; display: flex; justify-content: space-around; flex-wrap: wrap;">
+                    <div style="text-align: center; margin: 1rem;">
+                        <div style="font-size: 2rem; color: #10b981;">25-40%</div>
+                        <div style="opacity: 0.8;">Redução de Custos</div>
+                    </div>
+                    <div style="text-align: center; margin: 1rem;">
+                        <div style="font-size: 2rem; color: #06b6d4;">6 meses</div>
+                        <div style="opacity: 0.8;">Payback Period</div>
+                    </div>
+                    <div style="text-align: center; margin: 1rem;">
+                        <div style="font-size: 2rem; color: #8b5cf6;">280%</div>
+                        <div style="opacity: 0.8;">ROI Projetado</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Footer premium
+    st.markdown("""
+    <div style="
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 25px;
+        padding: 4rem 3rem;
+        margin-top: 5rem;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    ">
+        <h2 style="
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        ">
+            HR ANALYTICS INTELLIGENCE SUITE
+        </h2>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9;">
+            Plataforma Premium de Business Intelligence para RH
+        </p>
+        <div style="margin: 2rem 0;">
+            <span style="background: rgba(139, 92, 246, 0.2); padding: 0.5rem 1rem; border-radius: 15px; margin: 0.25rem; display: inline-block;">
+                Machine Learning
+            </span>
+            <span style="background: rgba(6, 182, 212, 0.2); padding: 0.5rem 1rem; border-radius: 15px; margin: 0.25rem; display: inline-block;">
+                Predictive Analytics
+            </span>
+            <span style="background: rgba(16, 185, 129, 0.2); padding: 0.5rem 1rem; border-radius: 15px; margin: 0.25rem; display: inline-block;">
+                Real-time Insights
+            </span>
+            <span style="background: rgba(245, 158, 11, 0.2); padding: 0.5rem 1rem; border-radius: 15px; margin: 0.25rem; display: inline-block;">
+                Executive Dashboard
+            </span>
+        </div>
+        <p style="margin-top: 2rem; font-size: 0.95rem; opacity: 0.7;">
+            Powered by Streamlit • Python • Plotly • Machine Learning<br>
+            Dashboard desenvolvido para portfólio profissional
+        </p>
+        <div style="margin-top: 2rem;">
+            <p style="font-size: 0.9rem; opacity: 0.6;">
+                © 2024 HR Analytics Intelligence Suite • Versão 2.0 Premium<br>
+                Desenvolvido para showcasing de habilidades em Data Science
+            </p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+if __name__ == "__main__":
+    main()# -*- coding: utf-8 -*-
 """
 HR Analytics Intelligence Suite
 Dashboard Premium para Análise de Recursos Humanos
