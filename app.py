@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+HR Analytics Intelligence Suite
+Dashboard Premium para Análise de Recursos Humanos
+"""
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -607,259 +613,9 @@ def display_loading():
     loading_placeholder = st.empty()
     with loading_placeholder.container():
         st.markdown("""
-        <div class="premium-loading
-def display_loading():
-    """Loading premium"""
-    loading_placeholder = st.empty()
-    with loading_placeholder.container():
-        st.markdown("""
         <div class="premium-loading">
-            <div class="premium-spinner"></div>
-            <div class="loading-text">Iniciando HR Analytics Intelligence Suite...</div>
-            <p style="color: rgba(255,255,255,0.6); margin-top: 1rem;">
-                Processando 400+ registros corporativos
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-        time.sleep(2)
-    loading_placeholder.empty()
-
-def create_chart(df: pd.DataFrame, chart_type: str):
-    """Criador de gráficos"""
-    theme = create_plotly_theme()
-    
-    if chart_type == "departmental":
-        dept_data = df['Departamento'].value_counts().head(8)
-        fig = px.bar(
-            x=dept_data.values,
-            y=dept_data.index,
-            orientation='h',
-            title="Análise Departamental",
-            color=dept_data.values,
-            color_continuous_scale=['#ef4444', '#f59e0b', '#8b5cf6', '#06b6d4', '#10b981']
-        )
-        fig.update_traces(
-            texttemplate='%{x}',
-            textposition='outside',
-            textfont=dict(size=12, color='white')
-        )
-        fig.update_layout(**theme['layout'])
-        fig.update_layout(height=400, showlegend=False)
-        fig.update_coloraxes(showscale=False)
-        return fig
-    
-    elif chart_type == "motivos":
-        motivo_data = df['Motivo_Ausencia'].value_counts().head(6)
-        fig = px.pie(
-            values=motivo_data.values,
-            names=motivo_data.index,
-            title="Distribuição de Motivos",
-            color_discrete_sequence=['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#ec4899']
-        )
-        fig.update_traces(
-            textinfo='percent+label',
-            textfont_size=11,
-            textfont_color='white'
-        )
-        fig.update_layout(**theme['layout'])
-        fig.update_layout(height=400)
-        return fig
-    
-    elif chart_type == "timeline":
-        timeline_data = df.groupby('Mes_Nome_BR').size().reset_index(name='Ausencias')
-        timeline_data['Data_Sort'] = pd.to_datetime(timeline_data['Mes_Nome_BR'], format='%b/%Y')
-        timeline_data = timeline_data.sort_values('Data_Sort')
-        
-        fig = px.line(
-            timeline_data,
-            x='Mes_Nome_BR',
-            y='Ausencias',
-            title="Evolução Temporal",
-            markers=True
-        )
-        fig.update_traces(
-            line=dict(color='#8b5cf6', width=3),
-            marker=dict(color='#06b6d4', size=8)
-        )
-        fig.update_layout(**theme['layout'])
-        fig.update_layout(height=350)
-        return fig
-
-def main():
-    """Função principal"""
-    
-    # Loading inicial
-    if 'loaded' not in st.session_state:
-        display_loading()
-        st.session_state.loaded = True
-    
-    # Header
-    st.markdown("""
-    <div class="mega-header">
-        <h1>HR ANALYTICS INTELLIGENCE SUITE</h1>
-        <p class="subtitle">Plataforma Avançada de Análise Corporativa com IA</p>
-        <div style="margin-top: 2rem;">
-            <span class="tech-badge">Machine Learning</span>
-            <span class="tech-badge">Real-time Analytics</span>
-            <span class="tech-badge">Business Intelligence</span>
-            <span class="tech-badge">Corporate Dashboard</span>
-        </div>
-        <div style="margin-top: 1.5rem;">
-            <span class="status-indicator"></span>
-            <span style="font-size: 0.9rem;">SISTEMA OPERACIONAL | DADOS SINCRONIZADOS</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Carregamento de dados
-    with st.spinner(""):
-        df = generate_premium_dataset()
-    
-    if len(df) == 0:
-        st.error("❌ Falha no carregamento dos dados.")
-        return
-    
-    st.success(f"✅ **{len(df)} registros corporativos** processados com sucesso!")
-    
-    # Sidebar
-    with st.sidebar:
-        st.markdown("""
-        <div style="text-align: center; padding: 2rem 0;">
-            <h2 style="color: white; font-family: 'Orbitron', monospace;">
-                CENTRO DE CONTROLE
-            </h2>
-            <p style="color: rgba(255,255,255,0.7);">Configure sua análise</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("### **Filtros Departamentais**")
-        departamentos_selecionados = st.multiselect(
-            "Departamentos:",
-            options=sorted(df['Departamento'].unique()),
-            default=sorted(df['Departamento'].unique())
-        )
-        
-        st.markdown("### **Análise de Motivos**")
-        motivos_selecionados = st.multiselect(
-            "Motivos:",
-            options=sorted(df['Motivo_Ausencia'].unique()),
-            default=sorted(df['Motivo_Ausencia'].unique())
-        )
-        
-        st.markdown("### **Status de Conformidade**")
-        justificacao_filtro = st.selectbox(
-            "Justificativas:",
-            options=['Todas', 'Sim', 'Nao']
-        )
-        
-        st.markdown("### **Período de Análise**")
-        try:
-            col1, col2 = st.columns(2)
-            with col1:
-                data_inicio = st.date_input(
-                    "Início:",
-                    value=df['Data_Ausencia'].min().date()
-                )
-            with col2:
-                data_fim = st.date_input(
-                    "Fim:",
-                    value=df['Data_Ausencia'].max().date()
-                )
-        except:
-            data_inicio = datetime.now().date()
-            data_fim = datetime.now().date()
-    
-    # Aplicar filtros
-    try:
-        df_filtrado = df.copy()
-        
-        if departamentos_selecionados:
-            df_filtrado = df_filtrado[df_filtrado['Departamento'].isin(departamentos_selecionados)]
-        
-        if motivos_selecionados:
-            df_filtrado = df_filtrado[df_filtrado['Motivo_Ausencia'].isin(motivos_selecionados)]
-        
-        if justificacao_filtro != 'Todas':
-            df_filtrado = df_filtrado[df_filtrado['Status_Justificativa'] == justificacao_filtro]
-        
-        try:
-            df_filtrado = df_filtrado[
-                (df_filtrado['Data_Ausencia'].dt.date >= data_inicio) &
-                (df_filtrado['Data_Ausencia'].dt.date <= data_fim)
-            ]
-        except:
-            pass
-            
-    except Exception:
-        df_filtrado = df.copy()
-    
-    if len(df_filtrado) == 0:
-        st.warning("⚠️ Nenhum registro encontrado. Exibindo dados completos.")
-        df_filtrado = df.copy()
-    
-    # Calcular métricas
-    metricas = calculate_premium_metrics(df_filtrado)
-    
-    # Sistema de abas
-    tab1, tab2, tab3 = st.tabs([
-        "🎯 COMMAND CENTER",
-        "📊 ANALYTICS 360°", 
-        "📋 EXECUTIVE SUITE"
-    ])
-    
-    with tab1:
-        st.markdown('<div class="ultra-section-title">CENTRO DE COMANDO EXECUTIVO</div>', unsafe_allow_html=True)
-        
-        # Cards de métricas
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
-            trend_class = "trend-negative" if metricas['total_ausencias'] > 150 else "trend-positive" if metricas['total_ausencias'] < 100 else "trend-neutral"
-            st.markdown(f"""
-            <div class="premium-metric-card">
-                <div class="premium-metric-label">TOTAL DE AUSÊNCIAS</div>
-                <div class="premium-metric-value">{metricas['total_ausencias']}</div>
-                <div class="premium-metric-trend {trend_class}">
-                    {round((metricas['total_ausencias']/len(df)*100), 1)}% do dataset
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown(f"""
-            <div class="premium-metric-card">
-                <div class="premium-metric-label">COLABORADORES IMPACTADOS</div>
-                <div class="premium-metric-value">{metricas['funcionarios_impactados']}</div>
-                <div class="premium-metric-trend">
-                    {metricas['ausencias_por_funcionario']} ausências/pessoa
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col3:
-            taxa_cor = "trend-positive" if metricas['taxa_justificacao'] > 80 else "trend-negative" if metricas['taxa_justificacao'] < 60 else "trend-neutral"
-            st.markdown(f"""
-            <div class="premium-metric-card">
-                <div class="premium-metric-label">TAXA DE CONFORMIDADE</div>
-                <div class="premium-metric-value">{metricas['taxa_justificacao']}%</div>
-                <div class="premium-metric-trend {taxa_cor}">
-                    {'🟢 Excelente' if metricas['taxa_justificacao'] > 80 else '🔴 Crítica' if metricas['taxa_justificacao'] < 60 else '🟡 Moderada'}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col4:
-            st.markdown(f"""
-            <div class="premium-metric-card">
-                <div class="premium-metric-label">IMPACTO FINANCEIRO</div>
-               <div class="premium-metric-value">R$ {metricas['impacto_financeiro']:,.0f}</div>
-                <div class="premium-metric-trend">
-                    R$ {int(metricas['impacto_financeiro']/max(1, metricas['total_ausencias'])):,} por ausência
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        # Segunda linha de métricas
+            <div class="premium
+# Segunda linha de métricas
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
@@ -1955,4 +1711,248 @@ def display_loading():
     loading_placeholder = st.empty()
     with loading_placeholder.container():
         st.markdown("""
-        <div class="premium-loading
+        <div class="premium-loading">
+            <div class="premium-spinner"></div>
+            <div class="loading-text">Iniciando HR Analytics Intelligence Suite...</div>
+            <p style="color: rgba(255,255,255,0.6); margin-top: 1rem;">
+                Processando 400+ registros corporativos
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        time.sleep(2)
+    loading_placeholder.empty()
+
+def create_chart(df: pd.DataFrame, chart_type: str):
+    """Criador de gráficos"""
+    theme = create_plotly_theme()
+    
+    if chart_type == "departmental":
+        dept_data = df['Departamento'].value_counts().head(8)
+        fig = px.bar(
+            x=dept_data.values,
+            y=dept_data.index,
+            orientation='h',
+            title="Análise Departamental",
+            color=dept_data.values,
+            color_continuous_scale=['#ef4444', '#f59e0b', '#8b5cf6', '#06b6d4', '#10b981']
+        )
+        fig.update_traces(
+            texttemplate='%{x}',
+            textposition='outside',
+            textfont=dict(size=12, color='white')
+        )
+        fig.update_layout(**theme['layout'])
+        fig.update_layout(height=400, showlegend=False)
+        fig.update_coloraxes(showscale=False)
+        return fig
+    
+    elif chart_type == "motivos":
+        motivo_data = df['Motivo_Ausencia'].value_counts().head(6)
+        fig = px.pie(
+            values=motivo_data.values,
+            names=motivo_data.index,
+            title="Distribuição de Motivos",
+            color_discrete_sequence=['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#ec4899']
+        )
+        fig.update_traces(
+            textinfo='percent+label',
+            textfont_size=11,
+            textfont_color='white'
+        )
+        fig.update_layout(**theme['layout'])
+        fig.update_layout(height=400)
+        return fig
+    
+    elif chart_type == "timeline":
+        timeline_data = df.groupby('Mes_Nome_BR').size().reset_index(name='Ausencias')
+        timeline_data['Data_Sort'] = pd.to_datetime(timeline_data['Mes_Nome_BR'], format='%b/%Y')
+        timeline_data = timeline_data.sort_values('Data_Sort')
+        
+        fig = px.line(
+            timeline_data,
+            x='Mes_Nome_BR',
+            y='Ausencias',
+            title="Evolução Temporal",
+            markers=True
+        )
+        fig.update_traces(
+            line=dict(color='#8b5cf6', width=3),
+            marker=dict(color='#06b6d4', size=8)
+        )
+        fig.update_layout(**theme['layout'])
+        fig.update_layout(height=350)
+        return fig
+
+def main():
+    """Função principal"""
+    
+    # Loading inicial
+    if 'loaded' not in st.session_state:
+        display_loading()
+        st.session_state.loaded = True
+    
+    # Header
+    st.markdown("""
+    <div class="mega-header">
+        <h1>HR ANALYTICS INTELLIGENCE SUITE</h1>
+        <p class="subtitle">Plataforma Avançada de Análise Corporativa com IA</p>
+        <div style="margin-top: 2rem;">
+            <span class="tech-badge">Machine Learning</span>
+            <span class="tech-badge">Real-time Analytics</span>
+            <span class="tech-badge">Business Intelligence</span>
+            <span class="tech-badge">Corporate Dashboard</span>
+        </div>
+        <div style="margin-top: 1.5rem;">
+            <span class="status-indicator"></span>
+            <span style="font-size: 0.9rem;">SISTEMA OPERACIONAL | DADOS SINCRONIZADOS</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Carregamento de dados
+    with st.spinner(""):
+        df = generate_premium_dataset()
+    
+    if len(df) == 0:
+        st.error("❌ Falha no carregamento dos dados.")
+        return
+    
+    st.success(f"✅ **{len(df)} registros corporativos** processados com sucesso!")
+    
+    # Sidebar
+    with st.sidebar:
+        st.markdown("""
+        <div style="text-align: center; padding: 2rem 0;">
+            <h2 style="color: white; font-family: 'Orbitron', monospace;">
+                CENTRO DE CONTROLE
+            </h2>
+            <p style="color: rgba(255,255,255,0.7);">Configure sua análise</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("### **Filtros Departamentais**")
+        departamentos_selecionados = st.multiselect(
+            "Departamentos:",
+            options=sorted(df['Departamento'].unique()),
+            default=sorted(df['Departamento'].unique())
+        )
+        
+        st.markdown("### **Análise de Motivos**")
+        motivos_selecionados = st.multiselect(
+            "Motivos:",
+            options=sorted(df['Motivo_Ausencia'].unique()),
+            default=sorted(df['Motivo_Ausencia'].unique())
+        )
+        
+        st.markdown("### **Status de Conformidade**")
+        justificacao_filtro = st.selectbox(
+            "Justificativas:",
+            options=['Todas', 'Sim', 'Nao']
+        )
+        
+        st.markdown("### **Período de Análise**")
+        try:
+            col1, col2 = st.columns(2)
+            with col1:
+                data_inicio = st.date_input(
+                    "Início:",
+                    value=df['Data_Ausencia'].min().date()
+                )
+            with col2:
+                data_fim = st.date_input(
+                    "Fim:",
+                    value=df['Data_Ausencia'].max().date()
+                )
+        except:
+            data_inicio = datetime.now().date()
+            data_fim = datetime.now().date()
+    
+    # Aplicar filtros
+    try:
+        df_filtrado = df.copy()
+        
+        if departamentos_selecionados:
+            df_filtrado = df_filtrado[df_filtrado['Departamento'].isin(departamentos_selecionados)]
+        
+        if motivos_selecionados:
+            df_filtrado = df_filtrado[df_filtrado['Motivo_Ausencia'].isin(motivos_selecionados)]
+        
+        if justificacao_filtro != 'Todas':
+            df_filtrado = df_filtrado[df_filtrado['Status_Justificativa'] == justificacao_filtro]
+        
+        try:
+            df_filtrado = df_filtrado[
+                (df_filtrado['Data_Ausencia'].dt.date >= data_inicio) &
+                (df_filtrado['Data_Ausencia'].dt.date <= data_fim)
+            ]
+        except:
+            pass
+            
+    except Exception:
+        df_filtrado = df.copy()
+    
+    if len(df_filtrado) == 0:
+        st.warning("⚠️ Nenhum registro encontrado. Exibindo dados completos.")
+        df_filtrado = df.copy()
+    
+    # Calcular métricas
+    metricas = calculate_premium_metrics(df_filtrado)
+    
+    # Sistema de abas
+    tab1, tab2, tab3 = st.tabs([
+        "🎯 COMMAND CENTER",
+        "📊 ANALYTICS 360°", 
+        "📋 EXECUTIVE SUITE"
+    ])
+    
+    with tab1:
+        st.markdown('<div class="ultra-section-title">CENTRO DE COMANDO EXECUTIVO</div>', unsafe_allow_html=True)
+        
+        # Cards de métricas
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            trend_class = "trend-negative" if metricas['total_ausencias'] > 150 else "trend-positive" if metricas['total_ausencias'] < 100 else "trend-neutral"
+            st.markdown(f"""
+            <div class="premium-metric-card">
+                <div class="premium-metric-label">TOTAL DE AUSÊNCIAS</div>
+                <div class="premium-metric-value">{metricas['total_ausencias']}</div>
+                <div class="premium-metric-trend {trend_class}">
+                    {round((metricas['total_ausencias']/len(df)*100), 1)}% do dataset
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown(f"""
+            <div class="premium-metric-card">
+                <div class="premium-metric-label">COLABORADORES IMPACTADOS</div>
+                <div class="premium-metric-value">{metricas['funcionarios_impactados']}</div>
+                <div class="premium-metric-trend">
+                    {metricas['ausencias_por_funcionario']} ausências/pessoa
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            taxa_cor = "trend-positive" if metricas['taxa_justificacao'] > 80 else "trend-negative" if metricas['taxa_justificacao'] < 60 else "trend-neutral"
+            st.markdown(f"""
+            <div class="premium-metric-card">
+                <div class="premium-metric-label">TAXA DE CONFORMIDADE</div>
+                <div class="premium-metric-value">{metricas['taxa_justificacao']}%</div>
+                <div class="premium-metric-trend {taxa_cor}">
+                    {'🟢 Excelente' if metricas['taxa_justificacao'] > 80 else '🔴 Crítica' if metricas['taxa_justificacao'] < 60 else '🟡 Moderada'}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col4:
+            st.markdown(f"""
+            <div class="premium-metric-card">
+                <div class="premium-metric-label">IMPACTO FINANCEIRO</div>
+                <div class="premium-metric-value">R$ {metricas['impacto_financeiro']:,.0f}</div>
+                <div class="premium-metric-trend">
+                    R$ {metricas['impacto_financeiro']/max(1, metricas['total_ausencias']):,.0f} por ausência
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
