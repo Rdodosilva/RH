@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-HR Analytics Intelligence Suite
+Suite Inteligente de Análise de RH
 Dashboard Premium para Análise de Recursos Humanos
 """
 
@@ -20,7 +20,7 @@ warnings.filterwarnings('ignore')
 
 # Configuração da página
 st.set_page_config(
-    page_title="HR Analytics Intelligence Suite",
+    page_title="Suite Inteligente de Análise de RH",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -615,7 +615,7 @@ def display_loading():
         st.markdown("""
         <div class="premium-loading">
             <div class="premium-spinner"></div>
-            <div class="loading-text">Iniciando HR Analytics Intelligence Suite...</div>
+            <div class="loading-text">Iniciando Suite Inteligente de Análise de RH...</div>
             <p style="color: rgba(255,255,255,0.6); margin-top: 1rem;">
                 Processando 400+ registros corporativos
             </p>
@@ -696,13 +696,13 @@ def main():
     # Header
     st.markdown("""
     <div class="mega-header">
-        <h1>HR ANALYTICS INTELLIGENCE SUITE</h1>
+        <h1>SUITE INTELIGENTE DE ANÁLISE DE RH</h1>
         <p class="subtitle">Plataforma Avançada de Análise Corporativa com IA</p>
         <div style="margin-top: 2rem;">
-            <span class="tech-badge">Machine Learning</span>
-            <span class="tech-badge">Real-time Analytics</span>
-            <span class="tech-badge">Business Intelligence</span>
-            <span class="tech-badge">Corporate Dashboard</span>
+            <span class="tech-badge">Aprendizado de Máquina</span>
+            <span class="tech-badge">Analytics em Tempo Real</span>
+            <span class="tech-badge">Inteligência de Negócios</span>
+            <span class="tech-badge">Dashboard Corporativo</span>
         </div>
         <div style="margin-top: 1.5rem;">
             <span class="status-indicator"></span>
@@ -802,9 +802,9 @@ def main():
     
     # Sistema de abas
     tab1, tab2, tab3 = st.tabs([
-        "🎯 COMMAND CENTER",
-        "📊 ANALYTICS 360°", 
-        "📋 EXECUTIVE SUITE"
+        "🎯 CENTRO DE COMANDO",
+        "📊 ANÁLISES AVANÇADAS", 
+        "📋 RELATÓRIOS EXECUTIVOS"
     ])
     
     with tab1:
@@ -1018,7 +1018,7 @@ def main():
             """, unsafe_allow_html=True)
     
     with tab2:
-        st.markdown('<div class="ultra-section-title">ANALYTICS 360° AVANÇADO</div>', unsafe_allow_html=True)
+        st.markdown('<div class="ultra-section-title">ANÁLISES CORPORATIVAS AVANÇADAS</div>', unsafe_allow_html=True)
         
         # Análise por gênero e padrões semanais
         col1, col2 = st.columns(2)
@@ -1120,7 +1120,7 @@ def main():
             st.error(f"Erro na tabela: {str(e)}")
     
     with tab3:
-        st.markdown('<div class="ultra-section-title">EXECUTIVE SUITE & RELATÓRIOS</div>', unsafe_allow_html=True)
+        st.markdown('<div class="ultra-section-title">RELATÓRIOS & DOCUMENTOS EXECUTIVOS</div>', unsafe_allow_html=True)
         
         # Downloads
         st.markdown("#### **Centro de Downloads Executivos**")
@@ -1128,16 +1128,16 @@ def main():
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            if st.button("📊 Excel Premium"):
+            if st.button("📊 Planilha Premium"):
                 try:
                     csv_data = df_filtrado.to_csv(index=False)
                     st.download_button(
-                        label="⬇️ Download Excel",
+                        label="⬇️ Baixar Planilha",
                         data=csv_data,
-                        file_name=f"hr_analytics_{datetime.now().strftime('%Y%m%d_%H%M')}.csv",
+                        file_name=f"analise_rh_{datetime.now().strftime('%Y%m%d_%H%M')}.csv",
                         mime="text/csv"
                     )
-                    st.success("✅ Excel gerado!")
+                    st.success("✅ Planilha gerada!")
                 except Exception as e:
                     st.error(f"Erro: {str(e)}")
         
@@ -1145,8 +1145,8 @@ def main():
             if st.button("📈 Relatório Executivo"):
                 try:
                     relatorio = f"""
-HR ANALYTICS INTELLIGENCE SUITE - RELATÓRIO EXECUTIVO
-===================================================
+SUITE INTELIGENTE DE ANÁLISE DE RH - RELATÓRIO EXECUTIVO
+=====================================================
 
 PERÍODO: {data_inicio.strftime('%d/%m/%Y')} - {data_fim.strftime('%d/%m/%Y')}
 GERADO EM: {datetime.now().strftime('%d/%m/%Y às %H:%M')}
@@ -1169,7 +1169,7 @@ STATUS CORPORATIVO
 RECOMENDAÇÕES ESTRATÉGICAS
 -------------------------
 1. Implementação de canal digital para justificativas
-2. Programa de wellness corporativo
+2. Programa de bem-estar corporativo
 3. Flexibilização de políticas de trabalho
 4. Sistema de monitoramento preditivo
 5. Benchmarking competitivo
@@ -1180,13 +1180,13 @@ PROJEÇÃO FINANCEIRA
 • Economia Potencial: R$ {metricas['impacto_financeiro'] * 0.30:,.0f}
 • Payback: 4-6 meses
 
-Relatório gerado pelo HR Analytics Intelligence Suite
+Relatório gerado pela Suite Inteligente de Análise de RH
                     """
                     
                     st.download_button(
-                        label="⬇️ Download Relatório",
+                        label="⬇️ Baixar Relatório",
                         data=relatorio,
-                        file_name=f"relatorio_hr_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
+                        file_name=f"relatorio_rh_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
                         mime="text/plain"
                     )
                     st.success("✅ Relatório gerado!")
@@ -1307,33 +1307,33 @@ Relatório gerado pelo HR Analytics Intelligence Suite
             -webkit-text-fill-color: transparent;
             background-clip: text;
         ">
-            HR ANALYTICS INTELLIGENCE SUITE
+            SUITE INTELIGENTE DE ANÁLISE DE RH
         </h2>
         <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9;">
-            Plataforma Premium de Business Intelligence para RH
+            Plataforma Premium de Inteligência de Negócios para RH
         </p>
         <div style="margin: 2rem 0;">
             <span style="background: rgba(139, 92, 246, 0.2); padding: 0.5rem 1rem; border-radius: 15px; margin: 0.25rem; display: inline-block;">
-                Machine Learning
+                Aprendizado de Máquina
             </span>
             <span style="background: rgba(6, 182, 212, 0.2); padding: 0.5rem 1rem; border-radius: 15px; margin: 0.25rem; display: inline-block;">
-                Predictive Analytics
+                Analytics Preditivos
             </span>
             <span style="background: rgba(16, 185, 129, 0.2); padding: 0.5rem 1rem; border-radius: 15px; margin: 0.25rem; display: inline-block;">
-                Real-time Insights
+                Insights em Tempo Real
             </span>
             <span style="background: rgba(245, 158, 11, 0.2); padding: 0.5rem 1rem; border-radius: 15px; margin: 0.25rem; display: inline-block;">
-                Executive Dashboard
+                Dashboard Executivo
             </span>
         </div>
         <p style="margin-top: 2rem; font-size: 0.95rem; opacity: 0.7;">
-            Powered by Streamlit • Python • Plotly • Machine Learning<br>
+            Desenvolvido com Streamlit • Python • Plotly • Aprendizado de Máquina<br>
             Dashboard desenvolvido para portfólio profissional
         </p>
         <div style="margin-top: 2rem;">
             <p style="font-size: 0.9rem; opacity: 0.6;">
-                © 2024 HR Analytics Intelligence Suite • Versão 2.0 Premium<br>
-                Desenvolvido para showcasing de habilidades em Data Science
+                © 2024 Suite Inteligente de Análise de RH • Versão 2.0 Premium<br>
+                Desenvolvido para demonstração de habilidades em Data Science
             </p>
         </div>
     </div>
