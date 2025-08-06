@@ -858,9 +858,9 @@ def main():
             st.markdown(f"""
             <div class="premium-metric-card">
                 <div class="premium-metric-label">IMPACTO FINANCEIRO</div>
-                <div class="premium-metric-value">R$ {metricas['impacto_financeiro']:,.0f}</div>
+               <div class="premium-metric-value">R$ {metricas['impacto_financeiro']:,.0f}</div>
                 <div class="premium-metric-trend">
-                    R$ {metricas['impacto_financeiro']/max(1, metricas['total_ausencias']):,.0f} por ausência
+                    R$ {int(metricas['impacto_financeiro']/max(1, metricas['total_ausencias'])):,} por ausência
                 </div>
             </div>
             """, unsafe_allow_html=True)
