@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-HR Analytics Intelligence Suite
-Dashboard Premium para Análise de Recursos Humanos
-"""
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
